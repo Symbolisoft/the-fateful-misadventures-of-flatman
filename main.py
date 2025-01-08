@@ -5,6 +5,7 @@ from config import *
 from inventory import *
 import math
 
+
 class Game:
     def __init__(self):
         pygame.init()
@@ -196,6 +197,11 @@ class Game:
                     BlackSmithWallBottom(self, j, i)
                 if col == 'd':
                     BlackSmithIntDoor(self, j, i)
+
+    def create_blacksmith_furniture_map(self):
+        for i, row in enumerate(blacksmith_interior_tilemap):
+            for j, col in enumerate(row):
+                pass
 
     def new(self):
         #   start a new game
@@ -832,10 +838,13 @@ class Game:
 
     def blacksmith_int_scene(self):
         self.blacksmith = True
+        
 
         self.create_blacksmith_map()
+        self.create_blacksmith_furniture_map()
 
         while self.blacksmith:
+            self.blacksmith_trigger = False
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.blacksmith = False
@@ -845,6 +854,8 @@ class Game:
             mouse_pos = pygame.mouse.get_pos()
             mouse_pressed = pygame.mouse.get_pressed()
             keys = pygame.key.get_pressed()
+
+            
             self.convo_text_disp = self.font_mid.render(self.sign_text[3], True, (BLACK))
             self.convo_text_disp_rect = self.convo_text_disp.get_rect(x=110, y=448)
             #   leave shop                
