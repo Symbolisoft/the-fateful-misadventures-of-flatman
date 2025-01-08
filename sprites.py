@@ -4,6 +4,7 @@ from inventory import *
 import math
 import random
 
+
 class SpriteSheet:
     def __init__(self, file):
         self.sheet = pygame.image.load(file).convert()
@@ -92,6 +93,7 @@ class Player(pygame.sprite.Sprite):
         self.collide_guard_trigger_1('x')
         self.collide_monument1_trigger('x')
         self.collide_flat_top_mountain_trigger('x')
+        
         self.rect.y += self.y_change
         self.collide_blocks('y')
         self.collide_snakes('y')
@@ -101,6 +103,7 @@ class Player(pygame.sprite.Sprite):
         self.collide_guard_trigger_1('y')
         self.collide_monument1_trigger('y')
         self.collide_flat_top_mountain_trigger('y')
+        self.collide_blacksmith_trigger('y')
 
         self.x_change = 0
         self.y_change = 0
@@ -132,28 +135,40 @@ class Player(pygame.sprite.Sprite):
         keys = pygame.key.get_pressed()
         #   left
         if keys[pygame.K_a] or keys[pygame.K_LEFT]:
-            for sprite in self.game.all_sprites:
+            if self.game.blacksmith == False:
+                for sprite in self.game.all_sprites:
+                    sprite.rect.x += PLAYER_SPEED
+            for sprite in self.game.blacksmith_int_sprites:
                 sprite.rect.x += PLAYER_SPEED
             self.x_change -= PLAYER_SPEED
             
             self.facing = 'left'
         #   right
         if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
-            for sprite in self.game.all_sprites:
+            if self.game.blacksmith == False:
+                for sprite in self.game.all_sprites:
+                    sprite.rect.x -= PLAYER_SPEED
+            for sprite in self.game.blacksmith_int_sprites:
                 sprite.rect.x -= PLAYER_SPEED
             self.x_change += PLAYER_SPEED
             
             self.facing = 'right'
         #   up
         if keys[pygame.K_w] or keys[pygame.K_UP]:
-            for sprite in self.game.all_sprites:
+            if self.game.blacksmith == False:
+                for sprite in self.game.all_sprites:
+                    sprite.rect.y += PLAYER_SPEED
+            for sprite in self.game.blacksmith_int_sprites:
                 sprite.rect.y += PLAYER_SPEED
             self.y_change -= PLAYER_SPEED
             
             self.facing = 'up'
         #   down
         if keys[pygame.K_s] or keys[pygame.K_DOWN]:
-            for sprite in self.game.all_sprites:
+            if self.game.blacksmith == False:
+                for sprite in self.game.all_sprites:
+                    sprite.rect.y -= PLAYER_SPEED
+            for sprite in self.game.blacksmith_int_sprites:
                 sprite.rect.y -= PLAYER_SPEED
             self.y_change += PLAYER_SPEED
             
@@ -382,6 +397,15 @@ class Player(pygame.sprite.Sprite):
                 self.game.flat_top_mountain_trigger = True
             else:
                 self.game.flat_top_mountain_trigger = False
+
+    def collide_blacksmith_trigger(self, direction):
+
+        if direction == 'y':
+            hits = pygame.sprite.spritecollide(self, self.game.blacksmith_trigger_sprite, False)
+            if hits:
+                self.game.blacksmith_trigger = True
+            else:
+                self.game.blacksmith_trigger = False
 
     def animate(self):
 
@@ -2545,4 +2569,165 @@ class BlackSmithExt(pygame.sprite.Sprite):
         self.animation_loop += 0.1
         if self.animation_loop >= 2:
             self.animation_loop = 0
+
+
+class BlackSmithFloor(pygame.sprite.Sprite):
+    def __init__(self, game, x, y):
+
+        self.game = game
+        self._layer = GROUND_LAYER
+        self.groups = self.game.blacksmith_int_sprites,
+        pygame.sprite.Sprite.__init__(self, self.groups)
+
+        self.x = x * TILESIZE
+        self.y = y * TILESIZE
+        self.width = TILESIZE
+        self.height = TILESIZE
+
+        self.images = [
+            self.game.blacksmith_int_spritesheet.get_sprite(175, 0, TILESIZE, TILESIZE),
+            self.game.blacksmith_int_spritesheet.get_sprite(200, 0, TILESIZE, TILESIZE),
+        ]
+
+        self.image = random.choice(self.images)
+
+        self.rect = self.image.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
+
+
+class BlackSmithWallTop(pygame.sprite.Sprite):
+    def __init__(self, game, x, y):
+
+        self.game = game
+        self._layer = GROUND_LAYER
+        self.groups = self.game.blacksmith_int_sprites, self.game.blocks
+        pygame.sprite.Sprite.__init__(self, self.groups)
+
+        self.x = x * TILESIZE
+        self.y = y * TILESIZE
+        self.width = TILESIZE
+        self.height = TILESIZE
+
+        self.images = [
+            self.game.blacksmith_int_spritesheet.get_sprite(0, 0, TILESIZE, TILESIZE),
+            self.game.blacksmith_int_spritesheet.get_sprite(25, 0, TILESIZE, TILESIZE),
+        ]
+
+        self.image = random.choice(self.images)
+
+        self.rect = self.image.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
+
+
+class BlackSmithWallLeft(pygame.sprite.Sprite):
+    def __init__(self, game, x, y):
+
+        self.game = game
+        self._layer = GROUND_LAYER
+        self.groups = self.game.blacksmith_int_sprites, self.game.blocks
+        pygame.sprite.Sprite.__init__(self, self.groups)
+
+        self.x = x * TILESIZE
+        self.y = y * TILESIZE
+        self.width = TILESIZE
+        self.height = TILESIZE
+
+       
+
+        self.image = self.game.blacksmith_int_spritesheet.get_sprite(75, 0, TILESIZE, TILESIZE)
+
+        self.rect = self.image.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
+
+
+class BlackSmithWallRight(pygame.sprite.Sprite):
+    def __init__(self, game, x, y):
+
+        self.game = game
+        self._layer = GROUND_LAYER
+        self.groups = self.game.blacksmith_int_sprites, self.game.blocks
+        pygame.sprite.Sprite.__init__(self, self.groups)
+
+        self.x = x * TILESIZE
+        self.y = y * TILESIZE
+        self.width = TILESIZE
+        self.height = TILESIZE
+
+       
+
+        self.image = self.game.blacksmith_int_spritesheet.get_sprite(100, 0, TILESIZE, TILESIZE)
+
+        self.rect = self.image.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
+
+
+class BlackSmithWallBottom(pygame.sprite.Sprite):
+    def __init__(self, game, x, y):
+
+        self.game = game
+        self._layer = GROUND_LAYER
+        self.groups = self.game.blacksmith_int_sprites, self.game.blocks
+        pygame.sprite.Sprite.__init__(self, self.groups)
+
+        self.x = x * TILESIZE
+        self.y = y * TILESIZE
+        self.width = TILESIZE
+        self.height = TILESIZE
+
+       
+
+        self.image = self.game.blacksmith_int_spritesheet.get_sprite(125, 0, TILESIZE, TILESIZE)
+
+        self.rect = self.image.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
+
+
+class BlackSmithIntDoor(pygame.sprite.Sprite):
+    def __init__(self, game, x, y):
+
+        self.game = game
+        self._layer = GROUND_LAYER
+        self.groups = self.game.blacksmith_int_sprites, self.game.blocks
+        pygame.sprite.Sprite.__init__(self, self.groups)
+
+        self.x = x * TILESIZE
+        self.y = y * TILESIZE
+        self.width = TILESIZE
+        self.height = TILESIZE
+
+       
+
+        self.image = self.game.blacksmith_int_spritesheet.get_sprite(150, 0, TILESIZE, TILESIZE)
+
+        self.rect = self.image.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
+
+
+class BlackSmithTrigger(pygame.sprite.Sprite):
+    def __init__(self, game, x, y):
+
+        self.game = game
+        self._layer = GROUND_LAYER
+        self.groups = self.game.all_sprites, self.game.blacksmith_trigger_sprite
+        pygame.sprite.Sprite.__init__(self, self.groups)
+
+        self.x = x * TILESIZE
+        self.y = y * TILESIZE
+        self.width = TILESIZE
+        self.height = TILESIZE
+
+        image_to_load = pygame.image.load('img/empty.png')
+        self.image = pygame.Surface([self.width, self.height])
+        self.image.blit(image_to_load, (0,0))
+        self.image.set_colorkey(WHITE)
+
+        self.rect = self.image.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
 

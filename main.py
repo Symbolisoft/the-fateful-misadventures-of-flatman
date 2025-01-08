@@ -31,6 +31,7 @@ class Game:
         self.dogon_attack_spritesheet = SpriteSheet('img/dogonattackspritesheet.png')
         self.lighthouse_spritesheet = SpriteSheet('img/lighthouse.png')
         self.blacksmith_ext_spritesheet = SpriteSheet('img/blacksmith_ext.png')
+        self.blacksmith_int_spritesheet = SpriteSheet('img/blacksmith_int_spritesheet.png')
 
         self.font = pygame.font.Font('jennifer.ttf', 26)
         self.font_mid = pygame.font.Font('jennifer.ttf', 18)
@@ -67,10 +68,14 @@ class Game:
 
         self.sign_text = [
             'Sign - San Flat-Tonio; Heroic defender of the Isles of Flerror.',
-            'Sign - Flat Top Mountain; The ruined shrine of the planewalkers.'
+            'Sign - Flat Top Mountain; The ruined shrine of the planewalkers.',
+            'Blacksmith\'s; Upgrade your gear here! - Press \'E\' to enter',
+            'Press \'X\' to exit'
         ]
         self.monument1_trigger = False
         self.flat_top_mountain_trigger = False
+        self.blacksmith_trigger = False
+        self.blacksmith = False
 
     def create_ground_map(self):
         for i, row in enumerate(ground_map):
@@ -155,6 +160,8 @@ class Game:
                     StaticShip(self, j, i)
                 if col == 'B':
                     BlackSmithExt(self, j, i)
+                if col == 'b':
+                    BlackSmithTrigger(self, j, i)
 
     def create_character_map(self):
         for i, row in enumerate(character_map):
@@ -173,6 +180,22 @@ class Game:
                     GuardKnight(self, j, i)
                 if col == '1':
                     GuardTriggerOne(self, j, i)
+
+    def create_blacksmith_map(self):
+        for i, row in enumerate(blacksmith_interior_tilemap):
+            for j, col in enumerate(row):
+                if col == 'f':
+                    BlackSmithFloor(self, j, i)
+                if col == 'l':
+                    BlackSmithWallLeft(self, j, i)
+                if col == 'r':
+                    BlackSmithWallRight(self, j, i)
+                if col == 't':
+                    BlackSmithWallTop(self, j, i)
+                if col == 'b':
+                    BlackSmithWallBottom(self, j, i)
+                if col == 'd':
+                    BlackSmithIntDoor(self, j, i)
 
     def new(self):
         #   start a new game
@@ -196,6 +219,8 @@ class Game:
         self.guard_trigger_1_sprite = pygame.sprite.LayeredUpdates()
         self.monument1_trigger_sprite = pygame.sprite.LayeredUpdates()
         self.flat_top_mountain_trigger_sprite = pygame.sprite.LayeredUpdates()
+        self.blacksmith_int_sprites = pygame.sprite.LayeredUpdates()
+        self.blacksmith_trigger_sprite = pygame.sprite.LayeredUpdates()
 
         self.create_ground_map()
         self.create_l2_map()
@@ -545,6 +570,7 @@ class Game:
 
         self.all_sprites.update()
         self.overlay_sprites.update()
+        self.blacksmith_int_sprites.update()
 
         #   conversation logic
 
@@ -584,6 +610,20 @@ class Game:
             if now - self.text_timer >= 5000:
                 self.flat_top_mountain_trigger == False
                 self.text_timer = now
+
+
+        if self.blacksmith_trigger:
+            now = pygame.time.get_ticks()
+            keys = pygame.key.get_pressed()
+            self.convo_text_disp = self.font_mid.render(self.sign_text[2], True, (BLACK))
+            self.convo_text_disp_rect = self.convo_text_disp.get_rect(x=110, y=448)
+            if keys[pygame.K_e]:
+                self.blacksmith_int_scene()
+                self.convo_text_disp = self.font_mid.render(self.sign_text[3], True, (BLACK))
+            if now - self.text_timer >= 5000:
+                self.blacksmith_trigger == False
+                self.text_timer = now
+
 
         #   overlay items that needs to update variables
         now = pygame.time.get_ticks()
@@ -789,6 +829,104 @@ class Game:
             self.screen.blit(play_button.image, play_button.rect)
             self.clock.tick(FPS)
             pygame.display.update()
+
+    def blacksmith_int_scene(self):
+        self.blacksmith = True
+
+        self.create_blacksmith_map()
+
+        while self.blacksmith:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.blacksmith = False
+                    self.playing = False
+                    self.running = False
+
+            mouse_pos = pygame.mouse.get_pos()
+            mouse_pressed = pygame.mouse.get_pressed()
+            keys = pygame.key.get_pressed()
+            self.convo_text_disp = self.font_mid.render(self.sign_text[3], True, (BLACK))
+            self.convo_text_disp_rect = self.convo_text_disp.get_rect(x=110, y=448)
+            #   leave shop                
+
+            if keys[pygame.K_x]:
+                self.blacksmith = False
+                for sprite in self.blacksmith_int_sprites:
+                    sprite.kill()
+
+            #   update
+
+            self.update()
+
+            #   Draw
+
+
+            self.draw_blacksmith_interior()
+
+            
+            self.clock.tick(FPS)
+            pygame.display.update()
+
+    def draw_blacksmith_interior(self):
+        self.screen.fill(BLACK)
+        self.blacksmith_int_sprites.draw(self.screen)
+        self.player_group.draw(self.screen)
+        
+
+        #   draw overlay
+        
+
+        self.screen.blit(self.overlay_bg, (0, 0))
+        self.screen.blit(self.overlay_title, self.overlay_title_rect)
+        self.screen.blit(self.level_text, self.level_text_rect)
+        self.screen.blit(self.healthbar, (100, 580))
+        self.screen.blit(self.health_text, self.health_text_rect)
+
+        self.screen.blit(self.weapon_slot_1_image, (760, 100))
+        self.screen.blit(self.slot_1_text, self.slot_1_text_rect)
+        self.screen.blit(self.weapon_slot_2_image, (840, 100))
+        self.screen.blit(self.slot_2_text, self.slot_2_text_rect)
+        self.screen.blit(self.slots_title, self.slots_title_rect)
+
+        self.screen.blit(self.inv_slot_1_image, (120, 500))
+        self.screen.blit(self.inv_1_text, self.inv_1_text_rect)
+        self.screen.blit(self.inv1_button.image, self.inv1_button.rect)
+        self.screen.blit(self.inv1_drop_button.image, self.inv1_drop_button.rect)
+
+        self.screen.blit(self.inv_slot_2_image, (240, 500))
+        self.screen.blit(self.inv_2_text, self.inv_2_text_rect)
+        self.screen.blit(self.inv2_button.image, self.inv2_button.rect)
+        self.screen.blit(self.inv2_drop_button.image, self.inv2_drop_button.rect)
+
+        self.screen.blit(self.inv_slot_3_image, (360, 500))
+        self.screen.blit(self.inv_3_text, self.inv_3_text_rect)
+        self.screen.blit(self.inv3_button.image, self.inv3_button.rect)
+        self.screen.blit(self.inv3_drop_button.image, self.inv3_drop_button.rect)
+
+        self.screen.blit(self.inv_slot_4_image, (480, 500))
+        self.screen.blit(self.inv_4_text, self.inv_4_text_rect)
+        self.screen.blit(self.inv4_button.image, self.inv4_button.rect)
+        self.screen.blit(self.inv4_drop_button.image, self.inv4_drop_button.rect)
+
+        self.screen.blit(self.inv_slot_5_image, (600, 500))
+        self.screen.blit(self.inv_5_text, self.inv_5_text_rect)
+        self.screen.blit(self.inv5_button.image, self.inv5_button.rect)
+        self.screen.blit(self.inv5_drop_button.image, self.inv5_drop_button.rect)
+
+        self.screen.blit(self.percent_complete_text, self.percent_complete_text_rect)
+
+        self.screen.blit(self.couldron_title, self.couldron_title_rect)
+        self.screen.blit(self.couldron_slot1_text, self.couldron_slot1_text_rect)
+        self.screen.blit(self.couldron_slot1, (760, 300))
+        self.screen.blit(self.couldron_slot2_text, self.couldron_slot2_text_rect)
+        self.screen.blit(self.couldron_slot2, (840, 300))
+        self.screen.blit(self.make_button.image, self.make_button.rect)
+        self.screen.blit(self.clear_button.image, self.clear_button.rect)
+
+        self.screen.blit(self.convo_text_disp, self.convo_text_disp_rect)
+
+        self.clock.tick(FPS)
+        pygame.display.update()
 
 
 g = Game()
