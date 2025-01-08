@@ -73,6 +73,7 @@ class Player(pygame.sprite.Sprite):
         self.health = 100
         self.pc_health = 100
         self.level = 1
+        self.gold = 0
 
     def update(self):
         #   call movement and animate functions.
@@ -2507,4 +2508,41 @@ class StaticShip(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
+
+
+class BlackSmithExt(pygame.sprite.Sprite):
+    def __init__(self, game, x, y):
+
+        self.game = game
+        self._layer = GROUND_LAYER
+        self.groups = self.game.all_sprites, self.game.blocks
+        pygame.sprite.Sprite.__init__(self, self.groups)
+
+        self.x = x * TILESIZE
+        self.y = y * TILESIZE
+        self.width = TILESIZE*2
+        self.height = TILESIZE*2
+
+        self.animation_loop = 0
+
+        self.images = [
+            self.game.blacksmith_ext_spritesheet.get_sprite(0, 0, TILESIZE*2, TILESIZE*2),
+            self.game.blacksmith_ext_spritesheet.get_sprite(50, 0, TILESIZE*2, TILESIZE*2)
+        ]
+
+        self.image = random.choice(self.images)
+
+        self.rect = self.image.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
+
+
+    def update(self):
+        self.animate()
+
+    def animate(self):
+        self.image = self.images[math.floor(self.animation_loop)]
+        self.animation_loop += 0.1
+        if self.animation_loop >= 2:
+            self.animation_loop = 0
 

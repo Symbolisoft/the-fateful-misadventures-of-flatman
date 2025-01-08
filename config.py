@@ -172,7 +172,7 @@ layer2_map = [
     '..TTkukupkkkkpokokkkk...................LTT...............',
     '..TTkukjmms.mmlkokkkk.................LTT.................',
     '..TTkuk........kokkkkMTTTTTTTTTTTTTTTTTT..................',
-    '..TTkukkkkkkkkkkokkkkTTTTTTTTTTTTTTTTTTh.h....H..h........',
+    '..TTkukkkkkkkkkkokkkkTTTTTTTTTTTTTTTTTTh.B....H..h........',
     '..TTkupkkkkkkkkpokkkkTT...................................',
     '..TTkjmmmms.mmmmlkkkkTT.............................H.....',
     '..TTk............kkkkTT......................8............',

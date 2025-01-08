@@ -30,6 +30,7 @@ class Game:
         self.ruined_pillar_spritesheet = SpriteSheet('img/ruinedpillarspritesheet.png')
         self.dogon_attack_spritesheet = SpriteSheet('img/dogonattackspritesheet.png')
         self.lighthouse_spritesheet = SpriteSheet('img/lighthouse.png')
+        self.blacksmith_ext_spritesheet = SpriteSheet('img/blacksmith_ext.png')
 
         self.font = pygame.font.Font('jennifer.ttf', 26)
         self.font_mid = pygame.font.Font('jennifer.ttf', 18)
@@ -152,6 +153,8 @@ class Game:
                     FlatTopMountainSignTrigger(self, j, i)
                 if col == 'v':
                     StaticShip(self, j, i)
+                if col == 'B':
+                    BlackSmithExt(self, j, i)
 
     def create_character_map(self):
         for i, row in enumerate(character_map):
