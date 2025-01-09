@@ -182,9 +182,13 @@ class Player(pygame.sprite.Sprite):
                     self.rect.x = hits[0].rect.left - self.rect.width
                     for sprite in self.game.all_sprites:
                         sprite.rect.x += PLAYER_SPEED
+                    for sprite in self.game.blacksmith_int_sprites:
+                        sprite.rect.x += PLAYER_SPEED
                 if self.x_change < 0:
                     self.rect.x = hits[0].rect.right
                     for sprite in self.game.all_sprites:
+                        sprite.rect.x -= PLAYER_SPEED
+                    for sprite in self.game.blacksmith_int_sprites:
                         sprite.rect.x -= PLAYER_SPEED
 
         if direction == 'y':
@@ -194,9 +198,13 @@ class Player(pygame.sprite.Sprite):
                     self.rect.y = hits[0].rect.top - self.rect.height
                     for sprite in self.game.all_sprites:
                         sprite.rect.y += PLAYER_SPEED
+                    for sprite in self.game.blacksmith_int_sprites:
+                        sprite.rect.y += PLAYER_SPEED
                 if self.y_change < 0:
                     self.rect.y = hits[0].rect.bottom
                     for sprite in self.game.all_sprites:
+                        sprite.rect.y -= PLAYER_SPEED
+                    for sprite in self.game.blacksmith_int_sprites:
                         sprite.rect.y -= PLAYER_SPEED
 
     def collide_npcs(self, direction):
@@ -334,9 +342,6 @@ class Player(pygame.sprite.Sprite):
                     for sprite in self.game.all_sprites:
                         sprite.rect.x -= PLAYER_SPEED
 
-                
-
-
         if direction == 'y':
             hits = pygame.sprite.spritecollide(self, self.game.items, True)
             if hits:
@@ -403,7 +408,8 @@ class Player(pygame.sprite.Sprite):
         if direction == 'y':
             hits = pygame.sprite.spritecollide(self, self.game.blacksmith_trigger_sprite, False)
             if hits:
-                self.game.blacksmith_trigger = True
+                if self.facing == 'up':
+                    self.game.blacksmith_trigger = True
             else:
                 self.game.blacksmith_trigger = False
 
@@ -2453,7 +2459,7 @@ class GuardTriggerOne(pygame.sprite.Sprite):
         self.x = x * TILESIZE
         self.y = y * TILESIZE
         self.width = TILESIZE
-        self.height = TILESIZE
+        self.height = 5
 
         image_to_load = pygame.image.load('img/empty.png')
         self.image = pygame.Surface([self.width, self.height])
@@ -2476,7 +2482,7 @@ class Monument1SignTrigger(pygame.sprite.Sprite):
         self.x = x * TILESIZE
         self.y = y * TILESIZE
         self.width = TILESIZE
-        self.height = TILESIZE
+        self.height = 5
 
         image_to_load = pygame.image.load('img/empty.png')
         self.image = pygame.Surface([self.width, self.height])
@@ -2499,7 +2505,7 @@ class FlatTopMountainSignTrigger(pygame.sprite.Sprite):
         self.x = x * TILESIZE
         self.y = y * TILESIZE
         self.width = TILESIZE
-        self.height = TILESIZE
+        self.height = 5
 
         image_to_load = pygame.image.load('img/empty.png')
         self.image = pygame.Surface([self.width, self.height])
@@ -2720,7 +2726,7 @@ class BlackSmithTrigger(pygame.sprite.Sprite):
         self.x = x * TILESIZE
         self.y = y * TILESIZE
         self.width = TILESIZE
-        self.height = TILESIZE
+        self.height = 5
 
         image_to_load = pygame.image.load('img/empty.png')
         self.image = pygame.Surface([self.width, self.height])
