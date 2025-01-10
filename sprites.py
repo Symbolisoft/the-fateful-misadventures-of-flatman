@@ -93,6 +93,7 @@ class Player(pygame.sprite.Sprite):
         self.collide_guard_trigger_1('x')
         self.collide_monument1_trigger('x')
         self.collide_flat_top_mountain_trigger('x')
+        self.collide_blacksmith_convo_trigger('x')
         
         self.rect.y += self.y_change
         self.collide_blocks('y')
@@ -412,6 +413,16 @@ class Player(pygame.sprite.Sprite):
                     self.game.blacksmith_trigger = True
             else:
                 self.game.blacksmith_trigger = False
+
+    def collide_blacksmith_convo_trigger(self, direction):
+
+        if direction == 'x':
+            hits = pygame.sprite.spritecollide(self, self.game.blacksmith_convo_trigger_sprite, False)
+            if hits:
+                if self.facing == 'left':
+                    self.game.blacksmith_convo_trigger = True
+            else:
+                self.game.blacksmith_convo_trigger = False
 
     def animate(self):
 
@@ -2617,7 +2628,7 @@ class BlackSmithWallTop(pygame.sprite.Sprite):
 
         self.images = [
             self.game.blacksmith_int_spritesheet.get_sprite(0, 0, TILESIZE, TILESIZE),
-            self.game.blacksmith_int_spritesheet.get_sprite(25, 0, TILESIZE, TILESIZE),
+            self.game.blacksmith_int_spritesheet.get_sprite(6, 0, TILESIZE, TILESIZE),
         ]
 
         self.image = random.choice(self.images)
@@ -2847,8 +2858,8 @@ class ShopKeep(pygame.sprite.Sprite):
         self.groups = self.game.blacksmith_int_sprites, self.game.blocks
         pygame.sprite.Sprite.__init__(self, self.groups)
 
-        self.x = x * TILESIZE
-        self.y = y * TILESIZE
+        self.x = x * TILESIZE+4
+        self.y = y * TILESIZE+12
         self.width = TILESIZE
         self.height = TILESIZE
 
@@ -2875,4 +2886,26 @@ class ShopKeep(pygame.sprite.Sprite):
         if self.animation_loop >= 2:
             self.animation_loop = 0
 
+
+class BlackSmithConvoTrigger(pygame.sprite.Sprite):
+    def __init__(self, game, x, y):
+
+        self.game = game
+        self._layer = GROUND_LAYER
+        self.groups = self.game.blacksmith_int_sprites, self.game.blacksmith_convo_trigger_sprite
+        pygame.sprite.Sprite.__init__(self, self.groups)
+
+        self.x = x * TILESIZE
+        self.y = y * TILESIZE
+        self.width = 5
+        self.height = TILESIZE
+
+        image_to_load = pygame.image.load('img/empty.png')
+        self.image = pygame.Surface([self.width, self.height])
+        self.image.blit(image_to_load, (0,0))
+        self.image.set_colorkey(WHITE)
+
+        self.rect = self.image.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
 
