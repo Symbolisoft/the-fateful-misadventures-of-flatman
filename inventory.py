@@ -32,7 +32,9 @@ class ItemStats():
 
 weapon_list = [
     ItemStats('Axe - Basic', pygame.image.load('img/axebasic.png'), 0, 20, True, False, False, False),
-    ItemStats('Crossbow', pygame.image.load('img/crossbow.png'), 0, 30, False, True, False, False)
+    ItemStats('Crossbow', pygame.image.load('img/crossbow.png'), 0, 30, False, True, False, False),
+    ItemStats('Axe - Honed', pygame.image.load('img/axebasic.png'), 0, 35, True, False, False, False),
+    ItemStats('Longbow', pygame.image.load('img/longbow.png'), 0, 40, False, True, False, False)
 ]
 
 item_list = [

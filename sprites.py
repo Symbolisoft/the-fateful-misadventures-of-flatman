@@ -1938,6 +1938,129 @@ class RangedAttackY(pygame.sprite.Sprite):
                 self.kill()
 
 
+class LongRangedAttackX(pygame.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.game = game
+        self._layer = PLAYER_LAYER
+        self.groups = self.game.all_sprites, self.game.attacks
+        pygame.sprite.Sprite.__init__(self, self.groups)
+        self.x = x
+        self.y = y
+        self.width = TILESIZE*4
+        self.height = TILESIZE
+
+        self.animation_loop = 0
+
+        self.right_animations = [
+            self.game.long_ranged_attack_spritesheet.get_sprite(0, 175, self.width, self.height),
+            self.game.long_ranged_attack_spritesheet.get_sprite(0, 200, self.width, self.height),
+            self.game.long_ranged_attack_spritesheet.get_sprite(0, 225, self.width, self.height)
+        ]
+
+        self.left_animations = [
+            self.game.long_ranged_attack_spritesheet.get_sprite(0, 100, self.width, self.height),
+            self.game.long_ranged_attack_spritesheet.get_sprite(0, 125, self.width, self.height),
+            self.game.long_ranged_attack_spritesheet.get_sprite(0, 150, self.width, self.height)
+        ]
+
+        self.image = self.game.long_ranged_attack_spritesheet.get_sprite(0, 0, self.width, self.height)
+        self.rect = self.image.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
+
+    def update(self):
+        self.animate()
+        self.collide()
+
+    def collide(self):
+        hits_enemies = pygame.sprite.spritecollide(self, self.game.enemies, False)
+        
+        if hits_enemies:
+            
+            now = pygame.time.get_ticks()
+            if now - self.game.last >= 1000:
+                self.game.player.level += hits_enemies[0].exp
+                hits_enemies[0].health -= self.game.player.weapon_slot2.inv[0].attack_strength
+                self.game.last = now
+
+    def animate(self):
+        direction = self.game.player.facing
+
+        
+        if direction == 'left':
+            self.image = self.left_animations[math.floor(self.animation_loop)]
+            self.animation_loop += 0.5
+            if self.animation_loop >= 3:
+                self.kill()
+
+        if direction == 'right':
+            self.image = self.right_animations[math.floor(self.animation_loop)]
+            self.animation_loop += 0.5
+            if self.animation_loop >= 3:
+                self.kill()
+
+
+class LongRangedAttackY(pygame.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.game = game
+        self._layer = PLAYER_LAYER
+        self.groups = self.game.all_sprites, self.game.attacks
+        pygame.sprite.Sprite.__init__(self, self.groups)
+        self.x = x
+        self.y = y
+        self.width = TILESIZE
+        self.height = TILESIZE * 4
+
+        self.animation_loop = 0
+
+        self.up_animations = [
+            self.game.long_ranged_attack_spritesheet.get_sprite(0, 0, self.width, self.height),
+            self.game.long_ranged_attack_spritesheet.get_sprite(25, 0, self.width, self.height),
+            self.game.long_ranged_attack_spritesheet.get_sprite(50, 0, self.width, self.height)
+        ]
+
+        self.down_animations = [
+            self.game.long_ranged_attack_spritesheet.get_sprite(0, 0, self.width, self.height),
+            self.game.long_ranged_attack_spritesheet.get_sprite(25, 0, self.width, self.height),
+            self.game.long_ranged_attack_spritesheet.get_sprite(50, 0, self.width, self.height)
+        ]
+
+        self.image = self.game.long_ranged_attack_spritesheet.get_sprite(0, 0, self.width, self.height)
+        self.rect = self.image.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
+
+    def update(self):
+        self.animate()
+        self.collide()
+
+    def collide(self):
+        hits_enemies = pygame.sprite.spritecollide(self, self.game.enemies, False)
+        
+        if hits_enemies:
+            
+            now = pygame.time.get_ticks()
+            if now - self.game.last >= 1000:
+                self.game.player.level += hits_enemies[0].exp
+                hits_enemies[0].health -= self.game.player.weapon_slot2.inv[0].attack_strength
+                self.game.last = now
+
+    def animate(self):
+        direction = self.game.player.facing
+
+        if direction == 'up':
+            self.image = self.up_animations[math.floor(self.animation_loop)]
+            self.animation_loop += 0.5
+            if self.animation_loop >= 3:
+                self.kill()
+
+        if direction == 'down':
+            self.image = self.down_animations[math.floor(self.animation_loop)]
+            self.animation_loop += 0.5
+            if self.animation_loop >= 3:
+                self.kill()
+
+
 class AxeBasic(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
 

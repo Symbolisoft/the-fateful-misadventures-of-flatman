@@ -36,6 +36,7 @@ class Game:
         self.shopcounter_spritesheet = SpriteSheet('img/shopcounter_spritesheet.png')
         self.furnace_spritesheet = SpriteSheet('img/furnace_spritesheet.png')
         self.shopkeep_spritesheet = SpriteSheet('img/shopkeep_spritesheet.png')
+        self.long_ranged_attack_spritesheet = SpriteSheet('img/longrangedattackspritesheet.png')
 
         self.font = pygame.font.Font('jennifer.ttf', 26)
         self.font_mid = pygame.font.Font('jennifer.ttf', 18)
@@ -393,6 +394,9 @@ class Game:
         self.convo_text_disp = self.font_smaller.render(self.convo_text, True, (180, 180, 180))
         self.convo_text_disp_rect = self.convo_text_disp.get_rect(x=110, y=460)
 
+        self.player_cash_disp = self.font.render(f'Gold: {self.player.gold}', True, (180, 180, 180))
+        self.player_cash_disp_rect = self.player_cash_disp.get_rect(x=750, y=445)
+
     def events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -413,13 +417,25 @@ class Game:
                 if event.key == pygame.K_b:
                     if self.player.armed_ranged:
                         if self.player.facing == 'up':
-                            RangedAttackY(self, self.player.rect.x, self.player.rect.y - 75)
+                            if self.player.weapon_slot2.inv[0].name == 'Crossbow':
+                                RangedAttackY(self, self.player.rect.x, self.player.rect.y - 75)
+                            elif self.player.weapon_slot2.inv[0].name == 'Longbow':
+                                LongRangedAttackY(self, self.player.rect.x, self.player.rect.y - 100)
                         if self.player.facing == 'down':
-                            RangedAttackY(self, self.player.rect.x, self.player.rect.y + TILESIZE)
+                            if self.player.weapon_slot2.inv[0].name == 'Crossbow':
+                                RangedAttackY(self, self.player.rect.x, self.player.rect.y + TILESIZE)
+                            elif self.player.weapon_slot2.inv[0].name == 'Longbow':
+                                LongRangedAttackY(self, self.player.rect.x, self.player.rect.y + TILESIZE)
                         if self.player.facing == 'left':
-                            RangedAttackX(self, self.player.rect.x - 75, self.player.rect.y)
+                            if self.player.weapon_slot2.inv[0].name == 'Crossbow':
+                                RangedAttackX(self, self.player.rect.x - 75, self.player.rect.y)
+                            elif self.player.weapon_slot2.inv[0].name == 'Longbow':
+                                LongRangedAttackX(self, self.player.rect.x - 100, self.player.rect.y)
                         if self.player.facing == 'right':
-                            RangedAttackX(self, self.player.rect.x + TILESIZE, self.player.rect.y)
+                            if self.player.weapon_slot2.inv[0].name == 'Crossbow':
+                                RangedAttackX(self, self.player.rect.x + TILESIZE, self.player.rect.y)
+                            elif self.player.weapon_slot2.inv[0].name == 'Longbow':
+                                RangedAttackX(self, self.player.rect.x + TILESIZE, self.player.rect.y)
 
 
         if self.player.health <= 0:
@@ -741,6 +757,9 @@ class Game:
             self.make_button = Button(740, 340, 50, 20, WHITE, BLACK, 'Cook', 16)
             self.clear_button = Button(820, 340, 50, 20, WHITE, BLACK, 'Clear', 16)
 
+            self.player_cash_disp = self.font.render(f'Gold: {self.player.gold}', True, (180, 180, 180))
+            self.player_cash_disp_rect = self.player_cash_disp.get_rect(x=750, y=445)
+
             self.last = now
 
         self.healthbar = self.healthbar_images[0]
@@ -821,6 +840,8 @@ class Game:
         self.screen.blit(self.clear_button.image, self.clear_button.rect)
 
         self.screen.blit(self.convo_text_disp, self.convo_text_disp_rect)
+
+        self.screen.blit(self.player_cash_disp, self.player_cash_disp_rect)
 
         self.clock.tick(FPS)
         pygame.display.update()
@@ -964,6 +985,8 @@ class Game:
 
         self.screen.blit(self.convo_text_disp, self.convo_text_disp_rect)
 
+        self.screen.blit(self.player_cash_disp, self.player_cash_disp_rect)
+
         self.clock.tick(FPS)
         pygame.display.update()
 
@@ -999,7 +1022,11 @@ class Game:
                 self.blacksmith_upgrade_convo1 = False
                 self.convo_text_disp = self.font_mid.render(self.blacksmith_convo[2], True, (BLACK))
                 self.convo_text_disp_rect = self.convo_text_disp.get_rect(x=110, y=448)
-                #   Logic here
+                if keys[pygame.K_e]:
+                    if self.player.gold >= 100:
+                        if self.player.weapon_slot.inv[0].name == 'Axe - Basic':
+                            self.player.weapon_slot.add_item(weapon_list[2])
+                            self.blacksmith_upgrade_axe = False
 
             #   Bow upgrade
                 
@@ -1007,7 +1034,11 @@ class Game:
                 self.blacksmith_upgrade_convo1 = False
                 self.convo_text_disp = self.font_mid.render(self.blacksmith_convo[3], True, (BLACK))
                 self.convo_text_disp_rect = self.convo_text_disp.get_rect(x=110, y=448)
-                #   Logic here
+                if keys[pygame.K_e]:
+                    if self.player.gold >= 100:
+                        if self.player.weapon_slot2.inv[0].name == 'Crossbow':
+                            self.player.weapon_slot.add_item(weapon_list[3])
+                            self.blacksmith_upgrade_bow = False
 
 
             # make it go away after
@@ -1103,6 +1134,9 @@ class Game:
 
             self.make_button = Button(740, 340, 50, 20, WHITE, BLACK, 'Cook', 16)
             self.clear_button = Button(820, 340, 50, 20, WHITE, BLACK, 'Clear', 16)
+
+            self.player_cash_disp = self.font.render(f'Gold: {self.player.gold}', True, (180, 180, 180))
+            self.player_cash_disp_rect = self.player_cash_disp.get_rect(x=750, y=445)
 
             self.last = now
 
