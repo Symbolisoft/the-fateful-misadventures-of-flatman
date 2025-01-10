@@ -105,6 +105,7 @@ class Player(pygame.sprite.Sprite):
         self.collide_monument1_trigger('y')
         self.collide_flat_top_mountain_trigger('y')
         self.collide_blacksmith_trigger('y')
+        self.collide_farm_girl_trigger('y')
 
         self.x_change = 0
         self.y_change = 0
@@ -423,6 +424,16 @@ class Player(pygame.sprite.Sprite):
                     self.game.blacksmith_convo_trigger = True
             else:
                 self.game.blacksmith_convo_trigger = False
+
+    def collide_farm_girl_trigger(self, direction):
+
+            if direction == 'y':
+                hits = pygame.sprite.spritecollide(self, self.game.farm_girl_trigger_sprite, False)
+                if hits:
+                    if self.facing == 'up':
+                        self.game.farm_girl_trigger = True
+                else:
+                    self.game.farm_girl_trigger = False
 
     def animate(self):
 
@@ -3022,6 +3033,53 @@ class BlackSmithConvoTrigger(pygame.sprite.Sprite):
         self.y = y * TILESIZE
         self.width = 5
         self.height = TILESIZE
+
+        image_to_load = pygame.image.load('img/empty.png')
+        self.image = pygame.Surface([self.width, self.height])
+        self.image.blit(image_to_load, (0,0))
+        self.image.set_colorkey(WHITE)
+
+        self.rect = self.image.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
+
+
+class FarmGirl(pygame.sprite.Sprite):
+    def __init__(self, game, x, y):
+
+        self.game = game
+        self._layer = NPC_LAYER
+        self.groups = self.game.all_sprites, self.game.blocks
+        pygame.sprite.Sprite.__init__(self, self.groups)
+
+        self.x = x * TILESIZE
+        self.y = y * TILESIZE+10
+        self.width = TILESIZE
+        self.height = TILESIZE
+
+        
+        image_to_load = pygame.image.load('img/farmgirl.png')
+        self.image = pygame.Surface([self.width, self.height])
+        self.image.blit(image_to_load, (0,0))
+        self.image.set_colorkey(WHITE)
+
+        self.rect = self.image.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
+
+
+class FarmGirlTrigger(pygame.sprite.Sprite):
+    def __init__(self, game, x, y):
+
+        self.game = game
+        self._layer = GROUND_LAYER
+        self.groups = self.game.all_sprites, self.game.farm_girl_trigger_sprite
+        pygame.sprite.Sprite.__init__(self, self.groups)
+
+        self.x = x * TILESIZE
+        self.y = y * TILESIZE
+        self.width = TILESIZE
+        self.height = 5
 
         image_to_load = pygame.image.load('img/empty.png')
         self.image = pygame.Surface([self.width, self.height])

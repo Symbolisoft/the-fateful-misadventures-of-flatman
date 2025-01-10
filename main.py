@@ -85,6 +85,14 @@ class Game:
             'You\'d like to upgrade your bow, that will be 100 gold. - \'E\''
         ]
 
+        self.farm_girl_convo_text = [
+            'Hi there Traveller.  You look lost, can I help you in some way? - \'E\'',
+            '\'1\' - I\'m Looking for work.    \'2\' - How do I get out of here?',
+            'If you chop some logs and bring me them, I\'ll pay you well - \'E\'',
+            'I have some logs for you. - \'E\' to sell logs.',
+            'This place is a maze, be careful of the Badgers.'
+        ]
+
         self.monument1_trigger = False
         self.flat_top_mountain_trigger = False
         self.blacksmith_trigger = False
@@ -93,6 +101,11 @@ class Game:
         self.blacksmith_upgrade_convo1 = False
         self.blacksmith_upgrade_axe = False
         self.blacksmith_upgrade_bow = False
+        self.farm_girl_trigger = False
+        self.farm_girl_trigger2 = False
+        self.farm_girl_work_trigger = False
+        self.farm_girl_work_trigger2 = False
+        self.farm_girl_directions = False
 
     def create_ground_map(self):
         for i, row in enumerate(ground_map):
@@ -197,6 +210,10 @@ class Game:
                     GuardKnight(self, j, i)
                 if col == '1':
                     GuardTriggerOne(self, j, i)
+                if col == 'F':
+                    FarmGirl(self, j, i)
+                if col == '2':
+                    FarmGirlTrigger(self, j, i)
 
     def create_blacksmith_map(self):
         for i, row in enumerate(blacksmith_interior_tilemap):
@@ -253,6 +270,7 @@ class Game:
         self.blacksmith_int_sprites = pygame.sprite.LayeredUpdates()
         self.blacksmith_trigger_sprite = pygame.sprite.LayeredUpdates()
         self.blacksmith_convo_trigger_sprite = pygame.sprite.LayeredUpdates()
+        self.farm_girl_trigger_sprite = pygame.sprite.LayeredUpdates()
 
         self.create_ground_map()
         self.create_l2_map()
@@ -671,6 +689,64 @@ class Game:
                 self.blacksmith_trigger == False
                 self.text_timer = now
 
+        if self.farm_girl_trigger:
+            now = pygame.time.get_ticks()
+            keys = pygame.key.get_pressed()
+            self.convo_text_disp = self.font_mid.render(self.farm_girl_convo_text[0], True, (BLACK))
+            self.convo_text_disp_rect = self.convo_text_disp.get_rect(x=110, y=448)
+            if keys[pygame.K_e]:
+                self.farm_girl_trigger2 = True
+                
+            if self.farm_girl_trigger2:
+                
+                self.convo_text_disp = self.font_mid.render(self.farm_girl_convo_text[1], True, (BLACK))
+                self.convo_text_disp_rect = self.convo_text_disp.get_rect(x=110, y=448)
+
+                if keys[pygame.K_1]:
+                    self.farm_girl_work_trigger = True
+
+                if keys[pygame.K_2]:
+                    self.farm_girl_directions = True
+
+                if self.farm_girl_work_trigger:
+                    
+                    self.convo_text_disp = self.font_mid.render(self.farm_girl_convo_text[2], True, (BLACK))
+                    self.convo_text_disp_rect = self.convo_text_disp.get_rect(x=110, y=448)
+
+                    if keys[pygame.K_e]:
+                        self.farm_girl_work_trigger2 = True
+
+                    if self.farm_girl_work_trigger2:
+                        
+                        self.convo_text_disp = self.font_mid.render(self.farm_girl_convo_text[3], True, (BLACK))
+                        self.convo_text_disp_rect = self.convo_text_disp.get_rect(x=110, y=448)
+                        now = pygame.time.get_ticks()
+                        if keys[pygame.K_e]:
+                            if now - self.text_timer >= 300:
+                                for item in self.player.inventory.inv:
+                                    if item.name == 'Logs':
+                                        self.player.inventory.drop_item(item)
+                                        self.player.gold += 10
+                                self.text_timer = now
+                                
+
+                if self.farm_girl_directions:
+
+                    self.convo_text_disp = self.font_mid.render(self.farm_girl_convo_text[4], True, (BLACK))
+                    self.convo_text_disp_rect = self.convo_text_disp.get_rect(x=110, y=448)
+
+
+
+
+
+            
+
+        else:
+            self.farm_girl_trigger2 = False
+            self.farm_girl_work_trigger = False
+            self.farm_girl_work_trigger2 = False
+            self.farm_girl_directions = False
+
 
         #   overlay items that needs to update variables
         now = pygame.time.get_ticks()
@@ -1026,6 +1102,7 @@ class Game:
                     if self.player.gold >= 100:
                         if self.player.weapon_slot.inv[0].name == 'Axe - Basic':
                             self.player.weapon_slot.add_item(weapon_list[2])
+                            self.player.gold -= 100
                             self.blacksmith_upgrade_axe = False
 
             #   Bow upgrade
@@ -1038,6 +1115,7 @@ class Game:
                     if self.player.gold >= 100:
                         if self.player.weapon_slot2.inv[0].name == 'Crossbow':
                             self.player.weapon_slot.add_item(weapon_list[3])
+                            self.player.gold -= 100
                             self.blacksmith_upgrade_bow = False
 
 
