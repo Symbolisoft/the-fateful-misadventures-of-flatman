@@ -2737,3 +2737,142 @@ class BlackSmithTrigger(pygame.sprite.Sprite):
         self.rect.x = self.x
         self.rect.y = self.y
 
+
+class ShopCounter(pygame.sprite.Sprite):
+    def __init__(self, game, x, y):
+
+        self.game = game
+        self._layer = GROUND_LAYER
+        self.groups = self.game.blacksmith_int_sprites, self.game.blocks
+        pygame.sprite.Sprite.__init__(self, self.groups)
+
+        self.x = x * TILESIZE
+        self.y = y * TILESIZE
+        self.width = TILESIZE
+        self.height = TILESIZE *2
+
+        self.animation_loop = 0
+
+        self.images = [
+            self.game.shopcounter_spritesheet.get_sprite(0, 0, TILESIZE, TILESIZE*2),
+            self.game.shopcounter_spritesheet.get_sprite(25, 0, TILESIZE, TILESIZE*2)
+        ]
+
+        self.image = random.choice(self.images)
+
+        self.rect = self.image.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
+
+
+    def update(self):
+        self.animate()
+
+    def animate(self):
+        self.image = self.images[math.floor(self.animation_loop)]
+        self.animation_loop += 0.1
+        if self.animation_loop >= 2:
+            self.animation_loop = 0
+
+
+class WorkBench(pygame.sprite.Sprite):
+    def __init__(self, game, x, y):
+
+        self.game = game
+        self._layer = GROUND_LAYER
+        self.groups = self.game.blacksmith_int_sprites, self.game.blocks
+        pygame.sprite.Sprite.__init__(self, self.groups)
+
+        self.x = x * TILESIZE
+        self.y = y * TILESIZE
+        self.width = TILESIZE
+        self.height = TILESIZE *2
+
+        image_to_load = pygame.image.load('img/workbench.png')
+        self.image = pygame.Surface([self.width, self.height])
+        self.image.blit(image_to_load, (0,0))
+        self.image.set_colorkey(WHITE)
+
+        self.rect = self.image.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
+
+
+    def update(self):
+        pass
+
+    
+class Furnace(pygame.sprite.Sprite):
+    def __init__(self, game, x, y):
+
+        self.game = game
+        self._layer = GROUND_LAYER
+        self.groups = self.game.blacksmith_int_sprites, self.game.blocks
+        pygame.sprite.Sprite.__init__(self, self.groups)
+
+        self.x = x * TILESIZE
+        self.y = y * TILESIZE
+        self.width = TILESIZE*2
+        self.height = TILESIZE*2
+
+        self.animation_loop = 0
+
+        self.images = [
+            self.game.furnace_spritesheet.get_sprite(0, 0, TILESIZE*2, TILESIZE*2),
+            self.game.furnace_spritesheet.get_sprite(50, 0, TILESIZE*2, TILESIZE*2)
+        ]
+
+        self.image = random.choice(self.images)
+
+        self.rect = self.image.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
+
+
+    def update(self):
+        self.animate()
+
+    def animate(self):
+        self.image = self.images[math.floor(self.animation_loop)]
+        self.animation_loop += 0.1
+        if self.animation_loop >= 2:
+            self.animation_loop = 0
+
+
+class ShopKeep(pygame.sprite.Sprite):
+    def __init__(self, game, x, y):
+
+        self.game = game
+        self._layer = NPC_LAYER
+        self.groups = self.game.blacksmith_int_sprites, self.game.blocks
+        pygame.sprite.Sprite.__init__(self, self.groups)
+
+        self.x = x * TILESIZE
+        self.y = y * TILESIZE
+        self.width = TILESIZE
+        self.height = TILESIZE
+
+        self.animation_loop = 0
+
+        self.images = [
+            self.game.shopkeep_spritesheet.get_sprite(0, 0, TILESIZE, TILESIZE),
+            self.game.shopkeep_spritesheet.get_sprite(25, 0, TILESIZE, TILESIZE)
+        ]
+
+        self.image = random.choice(self.images)
+
+        self.rect = self.image.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
+
+
+    def update(self):
+        self.animate()
+
+    def animate(self):
+        self.image = self.images[math.floor(self.animation_loop)]
+        self.animation_loop += 0.1
+        if self.animation_loop >= 2:
+            self.animation_loop = 0
+
+

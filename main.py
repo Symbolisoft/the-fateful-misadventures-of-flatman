@@ -33,6 +33,9 @@ class Game:
         self.lighthouse_spritesheet = SpriteSheet('img/lighthouse.png')
         self.blacksmith_ext_spritesheet = SpriteSheet('img/blacksmith_ext.png')
         self.blacksmith_int_spritesheet = SpriteSheet('img/blacksmith_int_spritesheet.png')
+        self.shopcounter_spritesheet = SpriteSheet('img/shopcounter_spritesheet.png')
+        self.furnace_spritesheet = SpriteSheet('img/furnace_spritesheet.png')
+        self.shopkeep_spritesheet = SpriteSheet('img/shopkeep_spritesheet.png')
 
         self.font = pygame.font.Font('jennifer.ttf', 26)
         self.font_mid = pygame.font.Font('jennifer.ttf', 18)
@@ -199,9 +202,16 @@ class Game:
                     BlackSmithIntDoor(self, j, i)
 
     def create_blacksmith_furniture_map(self):
-        for i, row in enumerate(blacksmith_interior_tilemap):
+        for i, row in enumerate(blacksmith_furniture_tilemap):
             for j, col in enumerate(row):
-                pass
+                if col == 'C':
+                    ShopCounter(self ,j, i)
+                if col == 'B':
+                    WorkBench(self, j, i)
+                if col == 'F':
+                    Furnace(self, j, i)
+                if col == 'S':
+                    ShopKeep(self, j, i)
 
     def new(self):
         #   start a new game
@@ -576,7 +586,7 @@ class Game:
 
         self.all_sprites.update()
         self.overlay_sprites.update()
-        self.blacksmith_int_sprites.update()
+        
 
         #   conversation logic
 
@@ -855,9 +865,12 @@ class Game:
             mouse_pressed = pygame.mouse.get_pressed()
             keys = pygame.key.get_pressed()
 
-            
-            self.convo_text_disp = self.font_mid.render(self.sign_text[3], True, (BLACK))
+            self.convo_text_disp = self.font_mid.render('', True, (BLACK))
             self.convo_text_disp_rect = self.convo_text_disp.get_rect(x=110, y=448)
+
+            if self.player.facing == 'down':
+                self.convo_text_disp = self.font_mid.render(self.sign_text[3], True, (BLACK))
+                self.convo_text_disp_rect = self.convo_text_disp.get_rect(x=110, y=448)
             #   leave shop                
 
             if keys[pygame.K_x]:
@@ -867,7 +880,7 @@ class Game:
 
             #   update
 
-            self.update()
+            self.update_blacksmith_interior()
 
             #   Draw
 
@@ -938,6 +951,126 @@ class Game:
 
         self.clock.tick(FPS)
         pygame.display.update()
+
+    def update_blacksmith_interior(self):
+
+            
+            self.overlay_sprites.update()
+            self.blacksmith_int_sprites.update()
+            self.player_group.update()
+
+            #   conversation logic
+
+
+
+            #   overlay items that needs to update variables
+            now = pygame.time.get_ticks()
+            if now - self.last >= 1000:
+
+                self.level_text = self.font.render(f'Level: {math.floor(self.player.level)}', True, WHITE)
+                self.level_text_rect = self.level_text.get_rect(x=740, y=170)
+                self.dec_lvl =self.player.level - math.floor(self.player.level)
+                self.pc_lvl = int(self.dec_lvl * 100)
+                self.percent_complete_text = self.font_small.render(f'{self.pc_lvl}% to lvl {math.floor(self.player.level) + 1}.', True, WHITE)
+                self.percent_complete_text_rect = self.percent_complete_text.get_rect(x= 740, y= 210)
+
+                self.slots_title = self.font.render('Weapons:', True, WHITE)
+                self.slots_title_rect = self.slots_title.get_rect(x= 740, y= 40)
+
+                self.weapon_slot_1_image = pygame.Surface((TILESIZE, TILESIZE))
+                self.weapon_slot_1_image_rect = self.weapon_slot_1_image.get_rect()
+                self.weapon_slot_1_image.blit(self.player.weapon_slot.inv[0].image, (0, 0))
+                self.weapon_slot_1_image.set_colorkey(WHITE)
+                self.slot_1_text = self.font_small.render(self.player.weapon_slot.inv[0].name, True, WHITE)
+                self.slot_1_text_rect = self.slot_1_text.get_rect(x= 740, y= 80)
+
+                self.weapon_slot_2_image = pygame.Surface((TILESIZE, TILESIZE))
+                self.weapon_slot_2_image_rect = self.weapon_slot_2_image.get_rect()
+                self.weapon_slot_2_image.blit(self.player.weapon_slot2.inv[0].image, (0, 0))
+                self.weapon_slot_2_image.set_colorkey(WHITE)
+                self.slot_2_text = self.font_small.render(self.player.weapon_slot2.inv[0].name, True, WHITE)
+                self.slot_2_text_rect = self.slot_1_text.get_rect(x= 820, y= 80)
+
+                self.convo_text_disp = self.font_smaller.render(self.convo_text, True, (180, 180, 180))
+                self.convo_text_disp_rect = self.convo_text_disp.get_rect(x=110, y=460)
+            
+                self.inv_slot_1_image.blit(self.player.inventory.inv[0].image, (0, 0))
+                self.inv_slot_1_image.set_colorkey(WHITE)
+                self.inv_1_text = self.font_small.render(self.player.inventory.inv[0].name, True, WHITE)
+                self.inv_1_text_rect = self.inv_1_text.get_rect(x= 110, y= 530)
+                self.inv1_button = Button(110, 550, 50, 20, WHITE, BLACK, 'Use', 18)
+                self.inv1_drop_button = Button(161, 550, 50, 20, WHITE, BLACK, 'Drop', 18)
+            
+            
+                self.inv_slot_2_image.blit(self.player.inventory.inv[1].image, (0, 0))
+                self.inv_slot_2_image.set_colorkey(WHITE)
+                self.inv_2_text = self.font_small.render(self.player.inventory.inv[1].name, True, WHITE)
+                self.inv_2_text_rect = self.inv_2_text.get_rect(x= 230, y= 530)
+                self.inv2_button = Button(230, 550, 50, 20, WHITE, BLACK, 'Use', 18)
+                self.inv2_drop_button = Button(281, 550, 50, 20, WHITE, BLACK, 'Drop', 18)
+            
+            
+                self.inv_slot_3_image.blit(self.player.inventory.inv[2].image, (0, 0))
+                self.inv_slot_3_image.set_colorkey(WHITE)
+                self.inv_3_text = self.font_small.render(self.player.inventory.inv[2].name, True, WHITE)
+                self.inv_3_text_rect = self.inv_3_text.get_rect(x= 350, y= 530)
+                self.inv3_button = Button(350, 550, 50, 20, WHITE, BLACK, 'Use', 18)
+                self.inv3_drop_button = Button(401, 550, 50, 20, WHITE, BLACK, 'Drop', 18)
+            
+            
+                self.inv_slot_4_image.blit(self.player.inventory.inv[3].image, (0, 0))
+                self.inv_slot_4_image.set_colorkey(WHITE)
+                self.inv_4_text = self.font_small.render(self.player.inventory.inv[3].name, True, WHITE)
+                self.inv_4_text_rect = self.inv_4_text.get_rect(x= 470, y= 530)
+                self.inv4_button = Button(470, 550, 50, 20, WHITE, BLACK, 'Use', 18)
+                self.inv4_drop_button = Button(521, 550, 50, 20, WHITE, BLACK, 'Drop', 18)
+            
+            
+                self.inv_slot_5_image.blit(self.player.inventory.inv[4].image, (0, 0))
+                self.inv_slot_5_image.set_colorkey(WHITE)
+                self.inv_5_text = self.font_small.render(self.player.inventory.inv[4].name, True, WHITE)
+                self.inv_5_text_rect = self.inv_5_text.get_rect(x= 590, y= 530)
+                self.inv5_button = Button(590, 550, 50, 20, WHITE, BLACK, 'Use', 18)
+                self.inv5_drop_button = Button(641, 550, 50, 20, WHITE, BLACK, 'Drop', 18)
+
+                self.couldron_slot1_text = self.font_small.render(f'{self.player.couldron.inv[0].name}', True, WHITE)
+                self.couldron_slot1_text_rect = self.couldron_slot1.get_rect(x= 740, y= 280)
+                self.couldron_slot1 = pygame.Surface((TILESIZE, TILESIZE))
+                self.couldron_slot1.blit(self.player.couldron.inv[0].image, (0, 0))
+                self.couldron_slot1.set_colorkey(WHITE)
+
+                self.couldron_slot2_text = self.font_small.render(f'{self.player.couldron.inv[1].name}', True, WHITE)
+                self.couldron_slot2_text_rect = self.couldron_slot2.get_rect(x= 820, y= 280)
+                self.couldron_slot2 = pygame.Surface((TILESIZE, TILESIZE))
+                self.couldron_slot2.blit(self.player.couldron.inv[1].image, (0, 0))
+                self.couldron_slot2.set_colorkey(WHITE)
+
+                self.make_button = Button(740, 340, 50, 20, WHITE, BLACK, 'Cook', 16)
+                self.clear_button = Button(820, 340, 50, 20, WHITE, BLACK, 'Clear', 16)
+
+                self.last = now
+
+            self.healthbar = self.healthbar_images[0]
+            if self.player.pc_health > 90:
+                self.healthbar = self.healthbar_images[0]
+            elif self.player.pc_health == 90:
+                self.healthbar = self.healthbar_images[1]
+            elif self.player.pc_health >= 80:
+                self.healthbar = self.healthbar_images[2]
+            elif self.player.pc_health >= 70:
+                self.healthbar = self.healthbar_images[3]
+            elif self.player.pc_health >= 60:
+                self.healthbar = self.healthbar_images[4]
+            elif self.player.pc_health >= 50:
+                self.healthbar = self.healthbar_images[5]
+            elif self.player.pc_health >= 40:
+                self.healthbar = self.healthbar_images[6]
+            elif self.player.pc_health >= 30:
+                self.healthbar = self.healthbar_images[7]
+            elif self.player.pc_health >= 20:
+                self.healthbar = self.healthbar_images[8]
+            elif self.player.pc_health >= 10:
+                self.healthbar = self.healthbar_images[9]
 
 
 g = Game()
