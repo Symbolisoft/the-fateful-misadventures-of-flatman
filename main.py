@@ -37,6 +37,7 @@ class Game:
         self.furnace_spritesheet = SpriteSheet('img/furnace_spritesheet.png')
         self.shopkeep_spritesheet = SpriteSheet('img/shopkeep_spritesheet.png')
         self.long_ranged_attack_spritesheet = SpriteSheet('img/longrangedattackspritesheet.png')
+        self.apple_tree_spritesheet = SpriteSheet('img/apple_tree_spritesheet.png')
 
         self.font = pygame.font.Font('jennifer.ttf', 26)
         self.font_mid = pygame.font.Font('jennifer.ttf', 18)
@@ -192,6 +193,8 @@ class Game:
                     BlackSmithExt(self, j, i)
                 if col == 'b':
                     BlackSmithTrigger(self, j, i)
+                if col == 'a':
+                    AppleTree(self, j, i)
 
     def create_character_map(self):
         for i, row in enumerate(character_map):
@@ -271,6 +274,7 @@ class Game:
         self.blacksmith_trigger_sprite = pygame.sprite.LayeredUpdates()
         self.blacksmith_convo_trigger_sprite = pygame.sprite.LayeredUpdates()
         self.farm_girl_trigger_sprite = pygame.sprite.LayeredUpdates()
+        self.apple_trees = pygame.sprite.LayeredUpdates()
 
         self.create_ground_map()
         self.create_l2_map()
@@ -476,15 +480,15 @@ class Game:
                 self.player.health += 30
                 self.player.inventory.inv.pop(0)
                 self.player.inventory.inv.insert(0, ItemStats('EMPTY', pygame.image.load('img/empty.png'), 0, 0, False, False, False, False))
-
+            if self.player.inventory.inv[0].name == 'Apple':
+                self.player.health += 4
+                self.player.inventory.inv.pop(0)
+                self.player.inventory.inv.insert(0, ItemStats('EMPTY', pygame.image.load('img/empty.png'), 0, 0, False, False, False, False))
+            
         if self.inv1_drop_button.is_pressed(mouse_pos, mouse_pressed):
-            if self.player.inventory.inv[0].name == 'Mushroom':
-                self.player.inventory.inv.pop(0)
-                self.player.inventory.inv.insert(0, ItemStats('EMPTY', pygame.image.load('img/empty.png'), 0, 0, False, False, False, False))
-            if self.player.inventory.inv[0].name == 'Logs':
-                self.player.inventory.inv.pop(0)
-                self.player.inventory.inv.insert(0, ItemStats('EMPTY', pygame.image.load('img/empty.png'), 0, 0, False, False, False, False))
-
+            self.player.inventory.inv.pop(0)
+            self.player.inventory.inv.insert(0, ItemStats('EMPTY', pygame.image.load('img/empty.png'), 0, 0, False, False, False, False))
+            
         if self.inv2_button.is_pressed(mouse_pos, mouse_pressed):
             if self.player.inventory.inv[1].name == 'Mushroom':
                 self.player.couldron.add_item(item_list[0])
@@ -498,16 +502,16 @@ class Game:
                 self.player.health += 30
                 self.player.inventory.inv.pop(1)
                 self.player.inventory.inv.insert(1, ItemStats('EMPTY', pygame.image.load('img/empty.png'), 0, 0, False, False, False, False))
-
-
-        if self.inv2_drop_button.is_pressed(mouse_pos, mouse_pressed):
-            if self.player.inventory.inv[1].name == 'Mushroom':
-                self.player.inventory.inv.pop(1)
-                self.player.inventory.inv.insert(1, ItemStats('EMPTY', pygame.image.load('img/empty.png'), 0, 0, False, False, False, False))
-            if self.player.inventory.inv[0].name == 'Logs':
+            if self.player.inventory.inv[1].name == 'Apple':
+                self.player.health += 4
                 self.player.inventory.inv.pop(1)
                 self.player.inventory.inv.insert(1, ItemStats('EMPTY', pygame.image.load('img/empty.png'), 0, 0, False, False, False, False))
             
+
+        if self.inv2_drop_button.is_pressed(mouse_pos, mouse_pressed):
+            self.player.inventory.inv.pop(1)
+            self.player.inventory.inv.insert(1, ItemStats('EMPTY', pygame.image.load('img/empty.png'), 0, 0, False, False, False, False))
+        
 
         if self.inv3_button.is_pressed(mouse_pos, mouse_pressed):
             if self.player.inventory.inv[2].name == 'Mushroom':
@@ -522,15 +526,15 @@ class Game:
                 self.player.health += 30
                 self.player.inventory.inv.pop(2)
                 self.player.inventory.inv.insert(2, ItemStats('EMPTY', pygame.image.load('img/empty.png'), 0, 0, False, False, False, False))
-
+            if self.player.inventory.inv[2].name == 'Apple':
+                self.player.health += 4
+                self.player.inventory.inv.pop(2)
+                self.player.inventory.inv.insert(2, ItemStats('EMPTY', pygame.image.load('img/empty.png'), 0, 0, False, False, False, False))
+            
 
         if self.inv3_drop_button.is_pressed(mouse_pos, mouse_pressed):
-            if self.player.inventory.inv[2].name == 'Mushroom':
-                self.player.inventory.inv.pop(2)
-                self.player.inventory.inv.insert(2, ItemStats('EMPTY', pygame.image.load('img/empty.png'), 0, 0, False, False, False, False))
-            if self.player.inventory.inv[2].name == 'Logs':
-                self.player.inventory.inv.pop(2)
-                self.player.inventory.inv.insert(2, ItemStats('EMPTY', pygame.image.load('img/empty.png'), 0, 0, False, False, False, False))
+            self.player.inventory.inv.pop(2)
+            self.player.inventory.inv.insert(2, ItemStats('EMPTY', pygame.image.load('img/empty.png'), 0, 0, False, False, False, False))
 
         if self.inv4_button.is_pressed(mouse_pos, mouse_pressed):
             if self.player.inventory.inv[3].name == 'Mushroom':
@@ -545,15 +549,14 @@ class Game:
                 self.player.health += 30
                 self.player.inventory.inv.pop(3)
                 self.player.inventory.inv.insert(3, ItemStats('EMPTY', pygame.image.load('img/empty.png'), 0, 0, False, False, False, False))
-
-
+            if self.player.inventory.inv[3].name == 'Apple':
+                self.player.health += 4
+                self.player.inventory.inv.pop(3)
+                self.player.inventory.inv.insert(3, ItemStats('EMPTY', pygame.image.load('img/empty.png'), 0, 0, False, False, False, False))
+            
         if self.inv4_drop_button.is_pressed(mouse_pos, mouse_pressed):
-            if self.player.inventory.inv[3].name == 'Mushroom':
-                self.player.inventory.inv.pop(3)
-                self.player.inventory.inv.insert(3, ItemStats('EMPTY', pygame.image.load('img/empty.png'), 0, 0, False, False, False, False))
-            if self.player.inventory.inv[3].name == 'Logs':
-                self.player.inventory.inv.pop(3)
-                self.player.inventory.inv.insert(3, ItemStats('EMPTY', pygame.image.load('img/empty.png'), 0, 0, False, False, False, False))
+            self.player.inventory.inv.pop(3)
+            self.player.inventory.inv.insert(3, ItemStats('EMPTY', pygame.image.load('img/empty.png'), 0, 0, False, False, False, False))
 
         if self.inv5_button.is_pressed(mouse_pos, mouse_pressed):
             if self.player.inventory.inv[4].name == 'Mushroom':
@@ -568,15 +571,14 @@ class Game:
                 self.player.health += 30
                 self.player.inventory.inv.pop(4)
                 self.player.inventory.inv.insert(4, ItemStats('EMPTY', pygame.image.load('img/empty.png'), 0, 0, False, False, False, False))
-
+            if self.player.inventory.inv[4].name == 'Apple':
+                self.player.health += 4
+                self.player.inventory.inv.pop(4)
+                self.player.inventory.inv.insert(4, ItemStats('EMPTY', pygame.image.load('img/empty.png'), 0, 0, False, False, False, False))
 
         if self.inv5_drop_button.is_pressed(mouse_pos, mouse_pressed):
-            if self.player.inventory.inv[4].name == 'Mushroom':
-                self.player.inventory.inv.pop(4)
-                self.player.inventory.inv.insert(4, ItemStats('EMPTY', pygame.image.load('img/empty.png'), 0, 0, False, False, False, False))
-            if self.player.inventory.inv[4].name == 'Logs':
-                self.player.inventory.inv.pop(4)
-                self.player.inventory.inv.insert(4, ItemStats('EMPTY', pygame.image.load('img/empty.png'), 0, 0, False, False, False, False))
+            self.player.inventory.inv.pop(4)
+            self.player.inventory.inv.insert(4, ItemStats('EMPTY', pygame.image.load('img/empty.png'), 0, 0, False, False, False, False))
 
         if self.make_button.is_pressed(mouse_pos, mouse_pressed):
 
@@ -636,11 +638,10 @@ class Game:
         self.all_sprites.update()
         self.overlay_sprites.update()
         
-
         #   conversation logic
 
         if self.guard_1_convo_trigger:
-            if self.player.level < 10:
+            if self.player.level < 5:
                 now = pygame.time.get_ticks()
                 self.convo_text_disp = self.font_mid.render(self.guard_1_convo[0], True, (BLACK))
                 self.convo_text_disp_rect = self.convo_text_disp.get_rect(x=110, y=448)
@@ -649,7 +650,7 @@ class Game:
                     self.guard_1_convo_trigger == False
                     self.text_timer = now
         
-            if self.player.level >= 10:
+            if self.player.level >= 5:
                 now = pygame.time.get_ticks()
                 self.convo_text_disp = self.font_mid.render(self.guard_1_convo[1], True, (BLACK))
                 self.convo_text_disp_rect = self.convo_text_disp.get_rect(x=110, y=448)
@@ -675,7 +676,6 @@ class Game:
             if now - self.text_timer >= 5000:
                 self.flat_top_mountain_trigger == False
                 self.text_timer = now
-
 
         if self.blacksmith_trigger:
             now = pygame.time.get_ticks()
@@ -734,12 +734,6 @@ class Game:
 
                     self.convo_text_disp = self.font_mid.render(self.farm_girl_convo_text[4], True, (BLACK))
                     self.convo_text_disp_rect = self.convo_text_disp.get_rect(x=110, y=448)
-
-
-
-
-
-            
 
         else:
             self.farm_girl_trigger2 = False
@@ -1114,7 +1108,7 @@ class Game:
                 if keys[pygame.K_e]:
                     if self.player.gold >= 100:
                         if self.player.weapon_slot2.inv[0].name == 'Crossbow':
-                            self.player.weapon_slot.add_item(weapon_list[3])
+                            self.player.weapon_slot2.add_item(weapon_list[3])
                             self.player.gold -= 100
                             self.blacksmith_upgrade_bow = False
 

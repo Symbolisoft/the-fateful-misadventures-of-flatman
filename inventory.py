@@ -40,7 +40,8 @@ weapon_list = [
 item_list = [
     ItemStats('Mushroom', pygame.image.load('img/mushroomsingle.png'), 0, 0, False, False, False, False),
     ItemStats('Logs', pygame.image.load('img/logs1.png'), 0, 0, False, False, False, False),
-    ItemStats('Mushtew', pygame.image.load('img/cookedmushroom.png'), 0, 0, False, False, True, False)
+    ItemStats('Mushtew', pygame.image.load('img/cookedmushroom.png'), 0, 0, False, False, True, False),
+    ItemStats('Apple', pygame.image.load('img/apple.png'), 0, 0, False, False, True, False)
 ]
 
 

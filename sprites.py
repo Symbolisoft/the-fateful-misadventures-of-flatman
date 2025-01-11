@@ -665,7 +665,7 @@ class GuardKnight(pygame.sprite.Sprite):
 
         self.x = x * TILESIZE
         self.y = y * TILESIZE
-        self.width = TILESIZE
+        self.width = TILESIZE + 10
         self.height = TILESIZE
 
         self.x_change = 0
@@ -738,7 +738,7 @@ class GuardKnight(pygame.sprite.Sprite):
         self.x_change = 0
         self.y_change = 0
 
-        if self.game.player.level >= 10:
+        if self.game.player.level >= 5:
             self.rect.width = TILESIZE-10
             self.lv10 = True
 
@@ -1779,9 +1779,16 @@ class MeleeAttack(pygame.sprite.Sprite):
         self.collide()
 
     def collide(self):
+        now = pygame.time.get_ticks()
         hits_enemies = pygame.sprite.spritecollide(self, self.game.enemies, False)
         hits_mushrooms = pygame.sprite.spritecollide(self, self.game.mushrooms, True)
         hits_logs = pygame.sprite.spritecollide(self, self.game.logs, True)
+        hits_apple_trees = pygame.sprite.spritecollide(self, self.game.apple_trees, False)
+
+        if hits_apple_trees:
+            if now - self.game.text_timer >= 300:
+                self.game.player.inventory.add_item(item_list[3])
+
         if hits_mushrooms:
             
             self.game.player.inventory.add_item(item_list[0])
@@ -3079,7 +3086,7 @@ class FarmGirlTrigger(pygame.sprite.Sprite):
         self.x = x * TILESIZE
         self.y = y * TILESIZE
         self.width = TILESIZE
-        self.height = 5
+        self.height = 20
 
         image_to_load = pygame.image.load('img/empty.png')
         self.image = pygame.Surface([self.width, self.height])
@@ -3089,4 +3096,33 @@ class FarmGirlTrigger(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
+
+
+class AppleTree(pygame.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.game = game
+        self._layer = LAYER_2
+        self.groups = self.game.all_sprites, self.game.blocks, self.game.apple_trees
+        pygame.sprite.Sprite.__init__(self, self.groups)
+
+        self.x = x * TILESIZE
+        self.y = y * TILESIZE
+        self.width = TILESIZE
+        self.height = TILESIZE
+
+        self.animation_loop = 0
+
+        self.images = [self.game.apple_tree_spritesheet.get_sprite(0, 0, TILESIZE, TILESIZE),
+                       self.game.apple_tree_spritesheet.get_sprite(25, 0, TILESIZE, TILESIZE)
+                       ]
+
+        self.image = random.choice(self.images)
+
+        self.rect = self.image.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
+
+    def update(self):
+        
+        pass
 
