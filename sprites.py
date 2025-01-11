@@ -1788,6 +1788,7 @@ class MeleeAttack(pygame.sprite.Sprite):
         if hits_apple_trees:
             if now - self.game.text_timer >= 300:
                 self.game.player.inventory.add_item(item_list[3])
+                self.game.text_timer = now
 
         if hits_mushrooms:
             

@@ -65,21 +65,25 @@ class Inventory():
         
         if self.inv[0].name == 'EMPTY':
             self.inv.insert(0, self.new_item)
-        elif self.inv[1].name == 'EMPTY':
-            self.inv.insert(1, self.new_item)
-        elif self.inv[2].name == 'EMPTY':
-            self.inv.insert(2, self.new_item)
-        elif self.inv[3].name == 'EMPTY':
-            self.inv.insert(3, self.new_item)
-        elif self.inv[4].name == 'EMPTY':
-            self.inv.insert(4, self.new_item)
         else:
-            try:
-                if len(self.inv) >= 5:
-                    self.inv.pop(4)
-                    self.inv.insert(4, self.new_item)
-            except IndexError:
-                pass
+            if self.inv[1].name == 'EMPTY':
+                self.inv.insert(1, self.new_item)
+            else:
+                if self.inv[2].name == 'EMPTY':
+                    self.inv.insert(2, self.new_item)
+                else:
+                    if self.inv[3].name == 'EMPTY':
+                        self.inv.insert(3, self.new_item)
+                    else:
+                        if self.inv[4].name == 'EMPTY':
+                            self.inv.insert(4, self.new_item)
+                        else:
+                            try:
+                                if len(self.inv) >= 5:
+                                    self.inv.pop(4)
+                                    self.inv.insert(4, self.new_item)
+                            except IndexError:
+                                pass
             
         
 
