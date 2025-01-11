@@ -1412,7 +1412,7 @@ class BadgerSpawnPoint(pygame.sprite.Sprite):
         image_to_load = pygame.image.load('img/empty.png')
         self.image = pygame.Surface([self.width, self.height])
         self.image.blit(image_to_load, (0,0))
-        #   self.image.set_colorkey(WHITE)
+        self.image.set_colorkey(WHITE)
 
         self.rect = self.image.get_rect()
         self.rect.x = self.x
@@ -1451,7 +1451,7 @@ class SnakeSpawnPoint(pygame.sprite.Sprite):
         image_to_load = pygame.image.load('img/empty.png')
         self.image = pygame.Surface([self.width, self.height])
         self.image.blit(image_to_load, (0,0))
-        #   self.image.set_colorkey(WHITE)
+        self.image.set_colorkey(WHITE)
 
         self.rect = self.image.get_rect()
         self.rect.x = self.x
@@ -1490,7 +1490,7 @@ class DogonSpawnPoint(pygame.sprite.Sprite):
         image_to_load = pygame.image.load('img/empty.png')
         self.image = pygame.Surface([self.width, self.height])
         self.image.blit(image_to_load, (0,0))
-        #   self.image.set_colorkey(WHITE)
+        self.image.set_colorkey(WHITE)
 
         self.rect = self.image.get_rect()
         self.rect.x = self.x
@@ -1506,9 +1506,10 @@ class DogonSpawnPoint(pygame.sprite.Sprite):
 
     def spawn(self):
         now = pygame.time.get_ticks()
-        if now - self.spawn_timer >= 30000:     #   5sec
-            Dogon(self.game, self.origin_x + self.game.rel_x, self.origin_y + self.game.rel_y)
-            self.spawn_timer = now
+        if now - self.spawn_timer >= 60000:     #   1min
+            if self.game.player.level >= 4:
+                Dogon(self.game, self.origin_x + self.game.rel_x, self.origin_y + self.game.rel_y)
+                self.spawn_timer = now
 
 
 class Wall(pygame.sprite.Sprite):

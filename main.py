@@ -211,6 +211,8 @@ class Game:
                     SnakeSpawnPoint(self, j, i)
                 if col == 'D':
                     DogonSpawnPoint(self, j, i)
+                if col == 'd':
+                    Dogon(self, j, i)
                 if col == 'G':
                     GuardKnight(self, j, i)
                 if col == '1':
@@ -792,6 +794,8 @@ class Game:
             self.rel_y = self.ref_y_pix/TILESIZE
         else:
             self.rel_y = self.ref_y_pix
+
+        
 
         #   overlay items that needs to update variables
         now = pygame.time.get_ticks()
