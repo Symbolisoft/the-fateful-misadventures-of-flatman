@@ -1422,11 +1422,13 @@ class BadgerSpawnPoint(pygame.sprite.Sprite):
         self.spawn_timer = pygame.time.get_ticks()
 
     def update(self):
-        self.spawn()
+        hits = pygame.sprite.spritecollide(self, self.game.aoi, False)
+        if hits:
+            self.spawn()
 
     def spawn(self):
         now = pygame.time.get_ticks()
-        if now - self.spawn_timer >= 40000:     #   1 minute?
+        if now - self.spawn_timer >= 10000:     #   5sec
             Badger(self.game, self.origin_x + self.game.rel_x, self.origin_y + self.game.rel_y)
             self.spawn_timer = now
 
@@ -1459,11 +1461,13 @@ class SnakeSpawnPoint(pygame.sprite.Sprite):
         self.spawn_timer = pygame.time.get_ticks()
 
     def update(self):
-        self.spawn()
+        hits = pygame.sprite.spritecollide(self, self.game.aoi, False)
+        if hits:
+            self.spawn()
 
     def spawn(self):
         now = pygame.time.get_ticks()
-        if now - self.spawn_timer >= 30000:     #   1 minute?
+        if now - self.spawn_timer >= 10000:     #   3sec
             Snake(self.game, self.origin_x + self.game.rel_x, self.origin_y + self.game.rel_y)
             self.spawn_timer = now
 
@@ -1496,11 +1500,13 @@ class DogonSpawnPoint(pygame.sprite.Sprite):
         self.spawn_timer = pygame.time.get_ticks()
 
     def update(self):
-        self.spawn()
+        hits = pygame.sprite.spritecollide(self, self.game.aoi, False)
+        if hits:
+            self.spawn()
 
     def spawn(self):
         now = pygame.time.get_ticks()
-        if now - self.spawn_timer >= 120000:     #   2 minute
+        if now - self.spawn_timer >= 30000:     #   5sec
             Dogon(self.game, self.origin_x + self.game.rel_x, self.origin_y + self.game.rel_y)
             self.spawn_timer = now
 
@@ -3272,3 +3278,29 @@ class ReferenceSprite(pygame.sprite.Sprite):
         self.rect.x = self.x
         self.rect.y = self.y
 
+
+class AreaOfInfluence(pygame.sprite.Sprite):
+    def __init__(self, game):
+
+        self.game = game
+        self._layer = GROUND_LAYER
+        self.groups = self.game.aoi
+        pygame.sprite.Sprite.__init__(self, self.groups)
+
+        self.x = self.game.player.rect.x -100
+        self.y = self.game.player.rect.y -150
+        self.width = TILESIZE*8
+        self.height = TILESIZE*8
+
+        image_to_load = pygame.image.load('img/area_of_influence.png')
+        self.image = pygame.Surface([self.width, self.height])
+        self.image.blit(image_to_load, (0,0))
+        self.image.set_colorkey(WHITE)
+
+        self.rect = self.image.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
+
+    def update(self):
+        self.x = self.game.player.rect.x -200
+        self.y = self.game.player.rect.y -175

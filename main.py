@@ -285,11 +285,13 @@ class Game:
         self.apple_trees = pygame.sprite.LayeredUpdates()
         self.penny_orchard_sign_trigger_sprite = pygame.sprite.LayeredUpdates()
         self.ref_sprite = pygame.sprite.LayeredUpdates()
+        self.aoi = pygame.sprite.LayeredUpdates()
 
         self.create_ground_map()
         self.create_l2_map()
         self.create_character_map()
         self.create_reference_sprite()
+        AreaOfInfluence(self)
         self.last = pygame.time.get_ticks()
 
         for sprite in self.ref_sprite:
@@ -662,6 +664,7 @@ class Game:
 
         self.all_sprites.update()
         self.overlay_sprites.update()
+        self.aoi.update()
         
         #   conversation logic
 
@@ -905,6 +908,7 @@ class Game:
     def draw(self):
         self.screen.fill(BLACK)
         self.all_sprites.draw(self.screen)
+        self.aoi.draw(self.screen)
         
 
         #   draw overlay
