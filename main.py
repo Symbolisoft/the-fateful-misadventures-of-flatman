@@ -76,7 +76,8 @@ class Game:
             'Sign - San Flat-Tonio; Heroic defender of the Isles of Flerror.',
             'Sign - Flat Top Mountain; The ruined shrine of the planewalkers.',
             'Blacksmith\'s; Upgrade your gear here! - Press \'E\' to enter',
-            'Press \'X\' to exit'
+            'Press \'X\' to exit',
+            'Penny Orchard - Home of the Penny Red apple!'
         ]
 
         self.blacksmith_convo = [
@@ -107,6 +108,7 @@ class Game:
         self.farm_girl_work_trigger = False
         self.farm_girl_work_trigger2 = False
         self.farm_girl_directions = False
+        self.penny_orchard_sign = False
 
     def create_ground_map(self):
         for i, row in enumerate(ground_map):
@@ -195,6 +197,8 @@ class Game:
                     BlackSmithTrigger(self, j, i)
                 if col == 'a':
                     AppleTree(self, j, i)
+                if col == '7':
+                    PennyOrchardSignTrigger(self, j, i)
 
     def create_character_map(self):
         for i, row in enumerate(character_map):
@@ -275,6 +279,7 @@ class Game:
         self.blacksmith_convo_trigger_sprite = pygame.sprite.LayeredUpdates()
         self.farm_girl_trigger_sprite = pygame.sprite.LayeredUpdates()
         self.apple_trees = pygame.sprite.LayeredUpdates()
+        self.penny_orchard_sign_trigger_sprite = pygame.sprite.LayeredUpdates()
 
         self.create_ground_map()
         self.create_l2_map()
@@ -734,13 +739,24 @@ class Game:
 
                     self.convo_text_disp = self.font_mid.render(self.farm_girl_convo_text[4], True, (BLACK))
                     self.convo_text_disp_rect = self.convo_text_disp.get_rect(x=110, y=448)
-
         else:
             self.farm_girl_trigger2 = False
             self.farm_girl_work_trigger = False
             self.farm_girl_work_trigger2 = False
             self.farm_girl_directions = False
 
+        self.penny_orchard_sign == False
+        if self.penny_orchard_sign:
+            now = pygame.time.get_ticks()
+            self.convo_text_disp = self.font_mid.render(self.sign_text[4], True, (BLACK))
+            self.convo_text_disp_rect = self.convo_text_disp.get_rect(x=110, y=448)
+            if now - self.text_timer >= 5000:
+                self.penny_orchard_sign == False
+                self.convo_text_disp = self.font_mid.render('', True, (BLACK))
+                self.convo_text_disp_rect = self.convo_text_disp.get_rect(x=110, y=448)
+                self.text_timer = now
+
+        
 
         #   overlay items that needs to update variables
         now = pygame.time.get_ticks()

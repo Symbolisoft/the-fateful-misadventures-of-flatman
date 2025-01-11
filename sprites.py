@@ -106,6 +106,7 @@ class Player(pygame.sprite.Sprite):
         self.collide_flat_top_mountain_trigger('y')
         self.collide_blacksmith_trigger('y')
         self.collide_farm_girl_trigger('y')
+        self.collide_penny_orchard_sign_trigger('y')
 
         self.x_change = 0
         self.y_change = 0
@@ -427,13 +428,24 @@ class Player(pygame.sprite.Sprite):
 
     def collide_farm_girl_trigger(self, direction):
 
-            if direction == 'y':
-                hits = pygame.sprite.spritecollide(self, self.game.farm_girl_trigger_sprite, False)
-                if hits:
-                    if self.facing == 'up':
-                        self.game.farm_girl_trigger = True
-                else:
-                    self.game.farm_girl_trigger = False
+        if direction == 'y':
+            hits = pygame.sprite.spritecollide(self, self.game.farm_girl_trigger_sprite, False)
+            if hits:
+                if self.facing == 'up':
+                    self.game.farm_girl_trigger = True
+            else:
+                self.game.farm_girl_trigger = False
+
+    def collide_penny_orchard_sign_trigger(self, direction):
+                    
+        if direction == 'y':
+            hits = pygame.sprite.spritecollide(self, self.game.penny_orchard_sign_trigger_sprite, False)
+            
+            if hits:
+                if self.game.player.facing == 'up':
+                    self.game.penny_orchard_sign = True
+            else:
+                self.game.penny_orchard_sign = False
 
     def animate(self):
 
@@ -1225,7 +1237,7 @@ class Badger(pygame.sprite.Sprite):
 class Dogon(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
         self.game = game
-        self._layer = NPC_LAYER
+        self._layer = OVERLAY_LAYER
         self.groups = self.game.all_sprites, self.game.enemies
         pygame.sprite.Sprite.__init__(self, self.groups)
 
@@ -3126,4 +3138,27 @@ class AppleTree(pygame.sprite.Sprite):
     def update(self):
         
         pass
+
+
+class PennyOrchardSignTrigger(pygame.sprite.Sprite):
+    def __init__(self, game, x, y):
+
+        self.game = game
+        self._layer = GROUND_LAYER
+        self.groups = self.game.all_sprites, self.game.penny_orchard_sign_trigger_sprite
+        pygame.sprite.Sprite.__init__(self, self.groups)
+
+        self.x = x * TILESIZE
+        self.y = y * TILESIZE
+        self.width = TILESIZE
+        self.height = 5
+
+        image_to_load = pygame.image.load('img/empty.png')
+        self.image = pygame.Surface([self.width, self.height])
+        self.image.blit(image_to_load, (0,0))
+        self.image.set_colorkey(WHITE)
+
+        self.rect = self.image.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
 
