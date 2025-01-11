@@ -206,13 +206,7 @@ class Game:
                 if col == 'P':
                     self.player = Player(self, j, i)
                 if col == 'B':
-                    Badger(self, j, i)
-                if col == 'S':
-                    Snake(self, j, i)
-                if col == 'D':
-                    Dogon(self, j, i)
-                if col == 'K':
-                    Knight(self, j, i)
+                    BadgerSpawnPoint(self, j, i)
                 if col == 'G':
                     GuardKnight(self, j, i)
                 if col == '1':
@@ -252,6 +246,12 @@ class Game:
                 if col == '1':
                     BlackSmithConvoTrigger(self, j, i)
 
+    def create_reference_sprite(self):
+        for i, row in enumerate(REFERENCE_SPRITE):
+            for j, col in enumerate(row):
+                if col == '1':
+                    ReferenceSprite(self, j, i)
+
     def new(self):
         #   start a new game
         self.playing = True
@@ -280,11 +280,27 @@ class Game:
         self.farm_girl_trigger_sprite = pygame.sprite.LayeredUpdates()
         self.apple_trees = pygame.sprite.LayeredUpdates()
         self.penny_orchard_sign_trigger_sprite = pygame.sprite.LayeredUpdates()
+        self.ref_sprite = pygame.sprite.LayeredUpdates()
 
         self.create_ground_map()
         self.create_l2_map()
         self.create_character_map()
+        self.create_reference_sprite()
         self.last = pygame.time.get_ticks()
+
+        for sprite in self.ref_sprite:
+            self.ref_x_pix = sprite.rect.x
+            self.ref_y_pix = sprite.rect.y
+        
+        if self.ref_x_pix != 0:
+            self.rel_x = self.ref_x_pix/TILESIZE
+        else:
+            self.rel_x = self.ref_x_pix
+
+        if self.ref_y_pix != 0:
+            self.rel_y = self.ref_y_pix/TILESIZE
+        else:
+            self.rel_y = self.ref_y_pix
 
         self.healthbar_images = [
             self.healthbar_spritesheet.get_sprite(0, 0, 600, 10),
@@ -756,7 +772,19 @@ class Game:
                 self.convo_text_disp_rect = self.convo_text_disp.get_rect(x=110, y=448)
                 self.text_timer = now
 
+        for sprite in self.ref_sprite:
+            self.ref_x_pix = sprite.rect.x
+            self.ref_y_pix = sprite.rect.y
         
+        if self.ref_x_pix != 0:
+            self.rel_x = self.ref_x_pix/TILESIZE
+        else:
+            self.rel_x = self.ref_x_pix
+
+        if self.ref_y_pix != 0:
+            self.rel_y = self.ref_y_pix/TILESIZE
+        else:
+            self.rel_y = self.ref_y_pix
 
         #   overlay items that needs to update variables
         now = pygame.time.get_ticks()

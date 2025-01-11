@@ -1394,7 +1394,7 @@ class DogonAttack(pygame.sprite.Sprite):
             self.kill()
 
 
-class NPCSpawnPoint(pygame.sprite.Sprite):
+class BadgerSpawnPoint(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
 
         self.game = game
@@ -1403,20 +1403,32 @@ class NPCSpawnPoint(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self, self.groups)
 
         self.x = x * TILESIZE
+        self.origin_x = x
         self.y = y * TILESIZE
+        self.origin_y = y
         self.width = TILESIZE
         self.height = TILESIZE
 
         image_to_load = pygame.image.load('img/empty.png')
         self.image = pygame.Surface([self.width, self.height])
         self.image.blit(image_to_load, (0,0))
-        self.image.set_colorkey(WHITE)
+        #   self.image.set_colorkey(WHITE)
 
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
         self.lv10 = False
 
+        self.spawn_timer = pygame.time.get_ticks()
+
+    def update(self):
+        self.spawn()
+
+    def spawn(self):
+        now = pygame.time.get_ticks()
+        if now - self.spawn_timer >= 10000:     #   1 minute?
+            Badger(self.game, self.origin_x + self.game.rel_x, self.origin_y + self.game.rel_y)
+            self.spawn_timer = now
 
 class Wall(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
@@ -3152,6 +3164,29 @@ class PennyOrchardSignTrigger(pygame.sprite.Sprite):
         self.y = y * TILESIZE
         self.width = TILESIZE
         self.height = 5
+
+        image_to_load = pygame.image.load('img/empty.png')
+        self.image = pygame.Surface([self.width, self.height])
+        self.image.blit(image_to_load, (0,0))
+        self.image.set_colorkey(WHITE)
+
+        self.rect = self.image.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
+
+
+class ReferenceSprite(pygame.sprite.Sprite):
+    def __init__(self, game, x, y):
+
+        self.game = game
+        self._layer = GROUND_LAYER
+        self.groups = self.game.all_sprites, self.game.ref_sprite
+        pygame.sprite.Sprite.__init__(self, self.groups)
+
+        self.x = x * TILESIZE
+        self.y = y * TILESIZE
+        self.width = TILESIZE
+        self.height = TILESIZE
 
         image_to_load = pygame.image.load('img/empty.png')
         self.image = pygame.Surface([self.width, self.height])
