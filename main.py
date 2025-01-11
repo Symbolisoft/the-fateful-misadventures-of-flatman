@@ -207,6 +207,10 @@ class Game:
                     self.player = Player(self, j, i)
                 if col == 'B':
                     BadgerSpawnPoint(self, j, i)
+                if col == 'S':
+                    SnakeSpawnPoint(self, j, i)
+                if col == 'D':
+                    DogonSpawnPoint(self, j, i)
                 if col == 'G':
                     GuardKnight(self, j, i)
                 if col == '1':

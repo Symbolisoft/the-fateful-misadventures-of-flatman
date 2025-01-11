@@ -921,25 +921,25 @@ class Snake(pygame.sprite.Sprite):
             self.y_change -= NPC_SPEED
             self.movement_loop -= 1
             if self.movement_loop <= -self.max_travel:
-                self.facing = 'down'
+                self.facing = random.choice(['up', 'down', 'left', 'right'])
 
         if self.facing == 'down':
             self.y_change += NPC_SPEED
             self.movement_loop += 1
             if self.movement_loop >= self.max_travel:
-                self.facing = 'up'
+                self.facing = random.choice(['up', 'down', 'left', 'right'])
 
         if self.facing == 'left':
             self.x_change -= NPC_SPEED
             self.movement_loop -= 1
             if self.movement_loop <= -self.max_travel:
-                self.facing = 'right'
+                self.facing = random.choice(['up', 'down', 'left', 'right'])
 
         if self.facing == 'right':
             self.x_change += NPC_SPEED
             self.movement_loop += 1
             if self.movement_loop >= self.max_travel:
-                self.facing = 'left'
+                self.facing = random.choice(['up', 'down', 'left', 'right'])
 
     def collide_blocks(self, direction):
         if direction == 'x':
@@ -1123,25 +1123,25 @@ class Badger(pygame.sprite.Sprite):
             self.y_change -= NPC_SPEED
             self.movement_loop -= 1
             if self.movement_loop <= -self.max_travel:
-                self.facing = 'down'
+                self.facing = random.choice(['up', 'down', 'left', 'right'])
 
         if self.facing == 'down':
             self.y_change += NPC_SPEED
             self.movement_loop += 1
             if self.movement_loop >= self.max_travel:
-                self.facing = 'up'
+                self.facing = random.choice(['up', 'down', 'left', 'right'])
 
         if self.facing == 'left':
             self.x_change -= NPC_SPEED
             self.movement_loop -= 1
             if self.movement_loop <= -self.max_travel:
-                self.facing = 'right'
+                self.facing = random.choice(['up', 'down', 'left', 'right'])
 
         if self.facing == 'right':
             self.x_change += NPC_SPEED
             self.movement_loop += 1
             if self.movement_loop >= self.max_travel:
-                self.facing = 'left'
+                self.facing = random.choice(['up', 'down', 'left', 'right'])
 
     def collide_blocks(self, direction):
         if direction == 'x':
@@ -1426,9 +1426,84 @@ class BadgerSpawnPoint(pygame.sprite.Sprite):
 
     def spawn(self):
         now = pygame.time.get_ticks()
-        if now - self.spawn_timer >= 10000:     #   1 minute?
+        if now - self.spawn_timer >= 40000:     #   1 minute?
             Badger(self.game, self.origin_x + self.game.rel_x, self.origin_y + self.game.rel_y)
             self.spawn_timer = now
+
+
+class SnakeSpawnPoint(pygame.sprite.Sprite):
+    def __init__(self, game, x, y):
+
+        self.game = game
+        self._layer = GROUND_LAYER
+        self.groups = self.game.all_sprites
+        pygame.sprite.Sprite.__init__(self, self.groups)
+
+        self.x = x * TILESIZE
+        self.origin_x = x
+        self.y = y * TILESIZE
+        self.origin_y = y
+        self.width = TILESIZE
+        self.height = TILESIZE
+
+        image_to_load = pygame.image.load('img/empty.png')
+        self.image = pygame.Surface([self.width, self.height])
+        self.image.blit(image_to_load, (0,0))
+        #   self.image.set_colorkey(WHITE)
+
+        self.rect = self.image.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
+        self.lv10 = False
+
+        self.spawn_timer = pygame.time.get_ticks()
+
+    def update(self):
+        self.spawn()
+
+    def spawn(self):
+        now = pygame.time.get_ticks()
+        if now - self.spawn_timer >= 30000:     #   1 minute?
+            Snake(self.game, self.origin_x + self.game.rel_x, self.origin_y + self.game.rel_y)
+            self.spawn_timer = now
+
+
+class DogonSpawnPoint(pygame.sprite.Sprite):
+    def __init__(self, game, x, y):
+
+        self.game = game
+        self._layer = GROUND_LAYER
+        self.groups = self.game.all_sprites
+        pygame.sprite.Sprite.__init__(self, self.groups)
+
+        self.x = x * TILESIZE
+        self.origin_x = x
+        self.y = y * TILESIZE
+        self.origin_y = y
+        self.width = TILESIZE
+        self.height = TILESIZE
+
+        image_to_load = pygame.image.load('img/empty.png')
+        self.image = pygame.Surface([self.width, self.height])
+        self.image.blit(image_to_load, (0,0))
+        #   self.image.set_colorkey(WHITE)
+
+        self.rect = self.image.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
+        self.lv10 = False
+
+        self.spawn_timer = pygame.time.get_ticks()
+
+    def update(self):
+        self.spawn()
+
+    def spawn(self):
+        now = pygame.time.get_ticks()
+        if now - self.spawn_timer >= 120000:     #   2 minute
+            Dogon(self.game, self.origin_x + self.game.rel_x, self.origin_y + self.game.rel_y)
+            self.spawn_timer = now
+
 
 class Wall(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
