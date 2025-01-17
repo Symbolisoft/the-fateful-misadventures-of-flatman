@@ -241,34 +241,36 @@ class Player(pygame.sprite.Sprite):
             if hits:
                 now = pygame.time.get_ticks()
                 if now - self.game.last >= 1000:
-                    self.health -= random.randint(10, 25)
+                    self.health -= random.randint(5, 15)
                     self.game.last = now
                 if self.x_change > 0:
                     self.rect.x = hits[0].rect.left - self.rect.width
                     for sprite in self.game.all_sprites:
                         sprite.rect.x += PLAYER_SPEED
+                    
                 
                 if self.x_change < 0:
                     self.rect.x = hits[0].rect.right
                     for sprite in self.game.all_sprites:
                         sprite.rect.x -= PLAYER_SPEED
-
+                    
         if direction == 'y':
             hits = pygame.sprite.spritecollide(self, self.game.snakes, False)
             if hits:
                 now = pygame.time.get_ticks()
                 if now - self.game.last >= 1000:
-                    self.health -= random.randint(10, 25)
+                    self.health -= random.randint(5, 15)
                     self.game.last = now
                 if self.y_change > 0:
                     self.rect.y = hits[0].rect.top - self.rect.height
                     for sprite in self.game.all_sprites:
                         sprite.rect.y += PLAYER_SPEED
+                    
                 if self.y_change < 0:
                     self.rect.y = hits[0].rect.bottom
                     for sprite in self.game.all_sprites:
                         sprite.rect.y -= PLAYER_SPEED
-
+                    
     def collide_badgers(self, direction):
 
         if direction == 'x':
@@ -276,33 +278,36 @@ class Player(pygame.sprite.Sprite):
             if hits:
                 now = pygame.time.get_ticks()
                 if now - self.game.last >= 1000:
-                    self.health -= random.randint(20, 50)
+                    self.health -= random.randint(10, 20)
                     self.game.last = now
                 if self.x_change > 0:
                     self.rect.x = hits[0].rect.left - self.rect.width
                     for sprite in self.game.all_sprites:
                         sprite.rect.x += PLAYER_SPEED
+                    
                 if self.x_change < 0:
                     self.rect.x = hits[0].rect.right
                     for sprite in self.game.all_sprites:
                         sprite.rect.x -= PLAYER_SPEED
+                    
 
         if direction == 'y':
             hits = pygame.sprite.spritecollide(self, self.game.badgers, False)
             if hits:
                 now = pygame.time.get_ticks()
                 if now - self.game.last >= 1000:
-                    self.health -= random.randint(20, 50)
+                    self.health -= random.randint(10, 20)
                     self.game.last = now
                 if self.y_change > 0:
                     self.rect.y = hits[0].rect.top - self.rect.height
                     for sprite in self.game.all_sprites:
                         sprite.rect.y += PLAYER_SPEED
+                    
                 if self.y_change < 0:
                     self.rect.y = hits[0].rect.bottom
                     for sprite in self.game.all_sprites:
                         sprite.rect.y -= PLAYER_SPEED
-
+                    
     def collide_wells(self, direction):
         if direction == 'x':
             hits = pygame.sprite.spritecollide(self, self.game.wells, False)
@@ -311,10 +316,12 @@ class Player(pygame.sprite.Sprite):
                     self.rect.x = hits[0].rect.left - self.rect.width
                     for sprite in self.game.all_sprites:
                         sprite.rect.x += PLAYER_SPEED
+                    
                 if self.x_change < 0:
                     self.rect.x = hits[0].rect.right
                     for sprite in self.game.all_sprites:
                         sprite.rect.x -= PLAYER_SPEED
+                    
 
         if direction == 'y':
             hits = pygame.sprite.spritecollide(self, self.game.wells, False)
@@ -323,11 +330,12 @@ class Player(pygame.sprite.Sprite):
                     self.rect.y = hits[0].rect.top - self.rect.height
                     for sprite in self.game.all_sprites:
                         sprite.rect.y += PLAYER_SPEED
+                    
                 if self.y_change < 0:
                     self.rect.y = hits[0].rect.bottom
                     for sprite in self.game.all_sprites:
                         sprite.rect.y -= PLAYER_SPEED
-
+                    
     def collide_items(self, direction):
         if direction == 'x':
             hits = pygame.sprite.spritecollide(self, self.game.items, True)
