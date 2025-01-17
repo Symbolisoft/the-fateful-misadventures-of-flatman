@@ -38,6 +38,7 @@ class Game:
         self.shopkeep_spritesheet = SpriteSheet('img/shopkeep_spritesheet.png')
         self.long_ranged_attack_spritesheet = SpriteSheet('img/longrangedattackspritesheet.png')
         self.apple_tree_spritesheet = SpriteSheet('img/apple_tree_spritesheet.png')
+        self.castle_1_spritesheet = SpriteSheet('img/castle1.png')
 
         self.font = pygame.font.Font('jennifer.ttf', 26)
         self.font_mid = pygame.font.Font('jennifer.ttf', 18)
@@ -199,6 +200,8 @@ class Game:
                     AppleTree(self, j, i)
                 if col == '7':
                     PennyOrchardSignTrigger(self, j, i)
+                if col == 'C':
+                    CastleOne(self, j, i)
 
     def create_character_map(self):
         for i, row in enumerate(character_map):

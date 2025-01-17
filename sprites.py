@@ -3313,3 +3313,41 @@ class AreaOfInfluence(pygame.sprite.Sprite):
     def update(self):
         self.x = self.game.player.rect.x -200
         self.y = self.game.player.rect.y -175
+
+
+class CastleOne(pygame.sprite.Sprite):
+    def __init__(self, game, x, y):
+
+        self.game = game
+        self._layer = GROUND_LAYER
+        self.groups = self.game.all_sprites, self.game.blocks
+        pygame.sprite.Sprite.__init__(self, self.groups)
+
+        self.x = x * TILESIZE
+        self.y = y * TILESIZE
+        self.width = TILESIZE*4
+        self.height = TILESIZE*4
+
+        self.animation_loop = 0
+
+        self.images = [
+            self.game.castle_1_spritesheet.get_sprite(0, 0, TILESIZE*4, TILESIZE*4),
+            self.game.castle_1_spritesheet.get_sprite(100, 0, TILESIZE*4, TILESIZE*4)
+        ]
+
+        self.image = random.choice(self.images)
+
+        self.rect = self.image.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
+
+
+    def update(self):
+        self.animate()
+
+    def animate(self):
+        self.image = self.images[math.floor(self.animation_loop)]
+        self.animation_loop += 0.1
+        if self.animation_loop >= 2:
+            self.animation_loop = 0
+
